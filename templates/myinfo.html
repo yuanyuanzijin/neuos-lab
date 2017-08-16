@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block header %}个人中心{% endblock %}
+
+{% block content %}
+
+<div class="container" style="margin: 20px auto">
+      <h4>姓名</h4>
+      <div class="input-group" style="width: 300px">
+          <input type="text" class="form-control" placeholder="请输入您的姓名">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">确认</button>
+          </span>
+      </div>
+</div>
+
+<div class="container" style="margin: 20px auto">
+      <h4>Github</h4>
+      <div class="input-group" style="width: 500px">
+          <p>您尚未绑定Github账号</p>
+            <button class="btn btn-default" type="button">前往Github绑定</button>
+      </div>
+</div>
+
+
+{% endblock %}

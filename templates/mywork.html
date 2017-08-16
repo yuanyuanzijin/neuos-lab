@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    我的作业
+{% endblock %}
+
+{% block content %}
+
+<select class="form-control" style="width: 100px; margin: 10px 0px">
+  <option>第一次</option>
+</select>
+
+
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">作业下载</h3>
+  </div>
+  <div class="panel-body">
+      <button class="btn btn-default" type="submit">获取我的作业</button>
+  </div>
+</div>
+
+<div class="panel panel-warning">
+  <div class="panel-heading">
+    <h3 class="panel-title">作业提交</h3>
+  </div>
+  <div class="panel-body">
+        <label for="basic-url">请输入作业repo名称</label>
+        <div class="input-group" style="width: 60%">
+            <span class="input-group-addon" id="basic-addon3">https://github.com/yuanyuanzijin/</span>
+            <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">确认</button>
+                    <button class="btn btn-default" type="submit">在线检测</button>
+                </span>
+        </div>
+  </div>
+</div>
+
+
+<div class="panel panel-success">
+  <div class="panel-heading">
+    <h3 class="panel-title">我的成绩</h3>
+  </div>
+  <div class="panel-body">
+      老师尚未打分
+  </div>
+</div>
+
+{% endblock %}

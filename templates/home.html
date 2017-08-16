@@ -1,15 +1,14 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block header %}总览{% endblock %}
 
-    <div class="page-header">
-        <h1>总览</h1>
-    </div>
+{% block content %}
 
     <div class="alert alert-warning alert-dismissible" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       <strong>请注意！</strong> 您还没有绑定Github账号，请及时绑定，否则无法上交作业。
     </div>
+
 
 
 {% endblock %}
