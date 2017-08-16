@@ -7,19 +7,71 @@
 <div class="container" style="margin: 20px auto">
       <h4>姓名</h4>
       <div class="input-group" style="width: 300px">
-          <input type="text" class="form-control" placeholder="请输入您的姓名">
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button">确认</button>
-          </span>
+            {% if q.name %}
+            <input type="text" class="form-control" value="{{q.name}}" disabled>
+            {% else %}
+            <input id="nameinput" type="text" class="form-control" placeholder="请输入您的姓名">
+            <span class="input-group-btn"><button id="openModal" class="btn btn-default" type="button">确认</button></span>
+            {% endif %}
       </div>
+      <p style="color: #aaa; margin-top: 15px">请确保姓名正确，姓名提交后无法修改</p>
 </div>
+
 
 <div class="container" style="margin: 20px auto">
       <h4>Github</h4>
-      <div class="input-group" style="width: 500px">
-          <p>您尚未绑定Github账号</p>
+      {% if q.github %}
+            <p>您已绑定Github账号：<b>{{q.github}}</b></p>
+            <a href="https://github.com/{{q.github}}" target="_blank"><button class="btn btn-default" type="button">前往我的Github</button></a>
+            <p style="color: #aaa; margin-top: 15px">如需更换绑定，请联系管理员</p>
+      {% else %}
+            <p>您尚未绑定Github账号</p>
             <button class="btn btn-default" type="button">前往Github绑定</button>
+      {% endif %}
+</div>
+
+
+
+<script>
+
+// 点击确认后获取输入值，激活模态框
+$('#openModal').on('click', function(){
+      input = $('#nameinput').val();
+      if(!input){
+            return
+      }
+      $('#namespan').html(input);
+      $('#confirmModal').modal('show');
+
+      // 点击提交向后台发送请求
+      $('#btn_nameinput').on('click', function(){
+            $('#confirmModal').modal('hide');
+            console.log('提交姓名'+input);
+      })
+})
+
+
+</script>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">提交确认</h4>
       </div>
+      <div class="modal-body">
+            请确认姓名 <b><span id="namespan"></span></b> ，<span style="color: red;">提交后无法更改！</span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button id="btn_nameinput"  type="button" class="btn btn-primary">提交</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 

@@ -38,13 +38,14 @@ def mywork(request):
         return HttpResponseRedirect('/')
 
 def myinfo(request):
-    # 如果已登录展现个人中心
-    if request.user.is_authenticated():
-        user = request.user.username
-        template = get_template('myinfo.html')
-        #name = User.objects.filter('user')
-        return HttpResponse(template.render(locals()))
     # 如果未登录则跳转到首页
-    else:
+    if not request.user.is_authenticated():
         return HttpResponseRedirect('/')
+    user = request.user.username
+    template = get_template('myinfo.html')
+    q = User.objects.filter(studentid=user)[0]
+    return HttpResponse(template.render(locals()))
+    
+
+        
 
