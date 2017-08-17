@@ -26,10 +26,10 @@ class User(models.Model):                                                   # id
 class Homework(models.Model):                                               # id为作业生成顺序，每位同学第一次下载作业时建立此表
     student_id = models.CharField(max_length=10)                            # 学号
     issue_id = models.CharField(max_length=10)                              # 作业序号（第几次序号）
-    download_limit = models.CharField(max_length=10, null=True)             # 下载次数
-    repo = models.CharField(max_length=10, null=True)                       # 提交的repo名称
-    submit_time = models.DateTimeField(null=True)                           # 提交时间
-    check_result = models.CharField(max_length=10, null=True)               # 作业检测结果
+    download_limit = models.CharField(max_length=10, null=True, blank=True)             # 下载次数
+    repo = models.CharField(max_length=10, null=True, blank=True)                       # 提交的repo名称
+    submit_time = models.DateTimeField(null=True, blank=True)                           # 提交时间
+    check_result = models.CharField(max_length=10, null=True, blank=True)               # 作业检测结果
     create_at = models.DateTimeField(null=True, auto_now_add=True)          # 数据创建时间
     update_at = models.DateTimeField(null=True, auto_now=True)              # 数据更新时间
 

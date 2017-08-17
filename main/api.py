@@ -19,6 +19,16 @@ def update_name(request):
     User.objects.filter(student_id=user).update(name=name)
     return HttpResponse('SUCCESS')
 
+def update_repo(request):
+    # 如果未登录则跳转到实验台
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+
+    repo = request.GET['repo']
+    issue = request.GET['issue']
+    user = request.user.username
+    Homework.objects.filter(student_id=user, issue_id=issue).update(repo=repo)
+    return HttpResponse('SUCCESS')
     
 
         

@@ -33,7 +33,8 @@ def mywork(request):
         user = request.user.username
         issue = 1
         template = get_template('mywork.html')
-        q = Issue.objects.get(id=issue)
+        qi = Issue.objects.get(id=issue)
+        qh = Homework.objects.get(student_id=user, issue_id=issue)
         return HttpResponse(template.render(locals()))
     # 如果未登录则跳转到首页
     else:

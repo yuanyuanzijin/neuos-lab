@@ -21,6 +21,7 @@ import django_cas_ng
 
 apipatterns = [
     url(r'^updatename', update_name),
+    url(r'^updaterepo', update_repo),
 ]
 
 urlpatterns = [
