@@ -6,9 +6,34 @@
 
 {% block content %}
 
-<select class="form-control" style="width: 100px; margin: 10px 0px">
-  <option>第一次</option>
+<select class="form-control" style="width: 100px; margin: 10px 0px; display: inline">
+    <option>第一次</option>
 </select>
+
+<span style="margin-left: 20px">
+    {% if q.issued %}
+        已下发
+    {% else %}
+        未下发
+    {% endif %}
+</span>
+
+<span style="margin-left: 20px">
+    {% if q.allow_submit %}
+        可提交
+    {% else %}
+        不可提交
+    {% endif %}
+</span>
+
+<span style="margin-left: 20px">
+    截止时间：
+    {% if q.deadline %}
+        <b>{{ q.deadline }}</b>
+    {% else %}
+        未设置
+    {% endif %}
+</span>
 
 
 <div class="panel panel-info">

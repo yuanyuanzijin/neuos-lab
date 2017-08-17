@@ -46,7 +46,22 @@ $('#openModal').on('click', function(){
       // 点击提交向后台发送请求
       $('#btn_nameinput').on('click', function(){
             $('#confirmModal').modal('hide');
-            console.log('提交姓名'+input);
+
+            $.ajax({
+                type: "GET",
+                url: '/api/updatename',
+                data: {
+                    name: input,
+                },
+                success: function (data) {
+                    console.log(data)
+                    if(data == 'SUCCESS'){
+                        window.location.reload();
+                    }else{
+                        console.log('修改失败');
+                    }
+                }
+            })
       })
 })
 

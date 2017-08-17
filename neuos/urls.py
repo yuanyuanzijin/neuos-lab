@@ -13,10 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
-from main.views import index, home, myinfo, mywork
+from main.views import *
+from main.api import *
 import django_cas_ng
+
+apipatterns = [
+    url(r'^updatename', update_name),
+]
 
 urlpatterns = [
     url(r'^$', index),
@@ -26,4 +31,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/login$', django_cas_ng.views.login, name='cas_ng_login'),
     url(r'^accounts/logout$', django_cas_ng.views.logout, name='cas_ng_logout'),
+    url(r'^api/', include(apipatterns))
 ]
