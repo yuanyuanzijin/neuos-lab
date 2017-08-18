@@ -42,7 +42,7 @@
 </div>
 
 {% if qi.issued %}
-<div class="panel panel-info">
+<div class="panel panel-info" style="max-width: 600px">
     <div class="panel-heading">
         <h3 class="panel-title">作业下载</h3>
      </div>
@@ -51,7 +51,7 @@
   </div>
 </div>
 
-<div class="panel panel-warning">
+<div class="panel panel-warning" style="max-width: 600px">
     <div class="panel-heading">
         <h3 class="panel-title">作业提交</h3>
     </div>
@@ -59,12 +59,21 @@
     <div class="panel-body">
         {% if qi.allow_submit %}
         <label for="basic-url">请输入作业repo名称</label>
-        <div class="input-group" style="width: 60%">
-            <span class="input-group-addon" id="basic-addon3">https://github.com/yuanyuanzijin/</span>
-            <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" value="{{qh.repo}}">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">确认</button>
-                </span>
+        <div class="input-group" style="max-width: 80%">
+            <span class="input-group-addon" id="basic-addon3">https://github.com/<b>{{qu.github}}</b>/</span>
+            {% if qh.repo %}
+            <input type="text" class="form-control" id="repo_input" aria-describedby="basic-addon3" value="{{qh.repo}}" disabled>
+            <span class="input-group-btn">
+                <button id="btn_repoupdate" class="btn btn-default" type="button">修改</button>
+                <button id="btn_repoinput" class="btn btn-success" type="button" style="display: none">提交作业</button>
+            </span>
+            {% else %}
+            <input type="text" class="form-control" id="repo_input" aria-describedby="basic-addon3">
+            <span class="input-group-btn">
+                <button id="btn_repoinput" class="btn btn-success" type="button" data-loading-text="提交中...">提交作业</button>
+            </span>
+            {% endif %}
+
         </div>
         {% else %}
         <p style="color: red">对不起，老师已关闭提交入口</p>
@@ -73,12 +82,12 @@
 </div>
 
 
-<div class="panel panel-success">
+<div class="panel panel-success" style="width: 600px">
     <div class="panel-heading">
         <h3 class="panel-title">作业检测</h3>
     </div>
     <div class="panel-body">
-        {% if qi.repo %}
+        {% if qh.repo %}
         <button class="btn btn-default" type="submit">在线检测</button>
         {% else %}
         <button class="btn btn-default" type="submit" disabled>您未提交作业</button>
@@ -90,5 +99,61 @@
 <div class="alert alert-warning" role="alert">作业未下发，请等待老师操作</div>
 {% endif %}
 
+
+<script>
+    $('#btn_repoinput').on('click', function(){
+        var $btn = $(this).button('loading');
+        repo = $('#repo_input').val();
+        $.ajax({
+            type: "GET",
+            url: '/api/updaterepo',
+            data: {
+                issue: 1,
+                repo: repo,
+            },
+            success: function (data) {
+                console.log(data)
+                if(data == 'SUCCESS'){
+                    $('#repoback').modal({
+                        backdrop: 'static',
+                        keyboard: false,
+                        show: true
+                    })
+
+                    $('#btn_reload').on('click', function(){
+                        window.location.reload();
+                    })
+
+                }else{
+                    console.log('修改失败');
+                }
+            }
+        })
+    })
+
+    $('#btn_repoupdate').on('click', function(){
+        $('#repo_input').removeAttr('disabled');
+        $('#btn_repoupdate').css('display', 'none')
+        $('#btn_repoinput').css('display', 'inline-block');
+    })
+        
+        </script>
+
+<!-- repo提交模态框 -->
+    <div id="repoback" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+              <p>作业提交成功</p>
+            </div>
+            <div class="modal-footer">
+              <button id="btn_reload" type="button" class="btn btn-primary">确定</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 {% endblock %}

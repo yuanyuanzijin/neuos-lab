@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from django.template.loader import get_template
 from django_cas_ng import views as baseviews
 from .models import User, Homework, Issue
+from django.utils import timezone
 
 # Create your views here.
 def update_name(request):
@@ -27,7 +28,8 @@ def update_repo(request):
     repo = request.GET['repo']
     issue = request.GET['issue']
     user = request.user.username
-    Homework.objects.filter(student_id=user, issue_id=issue).update(repo=repo)
+    time = timezone.now()
+    Homework.objects.filter(student_id=user, issue_id=issue).update(repo=repo, submit_time=time)
     return HttpResponse('SUCCESS')
     
 
