@@ -8,7 +8,11 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+      {% if not permission %}
       <a class="navbar-brand" id="navheader" href="/home">NEU OS实验分发平台</a>
+      {% else %}
+      <a class="navbar-brand" id="navheader" href="/teacher">NEU OS实验分发平台<span class="badge">教师版</span></a>
+      {% endif %}
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->

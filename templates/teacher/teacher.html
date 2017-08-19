@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block header %}总览{% endblock %}
+
+{% block content %}
+
+<div class="panel panel-success" style="max-width: 900px">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        <h3 class="panel-title">作业通览</h3>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+          <th>作业序号</th>
+          <th>是否下发</th>
+          <th>提交入口</th>
+          <th>截止日期</th>
+          <th>已提交</th>
+          <th>验收通过</th>
+          <th>操作</th>
+        </thead>
+
+        {% for qi in qi_all %}
+        <tr>
+          <td>{{qi.id}}</td>
+          <td>{{qi.issued}}</td>
+          <td>{% if qi.allow_submit %}开启{% else %}关闭{% endif %}</td>
+          <td>{{qi.deadline}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+{% endblock %}

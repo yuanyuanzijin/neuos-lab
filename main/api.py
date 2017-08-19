@@ -29,8 +29,12 @@ def update_repo(request):
     issue = request.GET['issue']
     user = request.user.username
     time = timezone.now()
-    Homework.objects.filter(student_id=user, issue_id=issue).update(repo=repo, submit_time=time)
-    return HttpResponse('SUCCESS')
+    homework = Homework.objects.filter(student_id=user, issue_id=issue)
+    if homework:
+        homework.update(repo=repo, submit_time=time)
+        return HttpResponse('SUCCESS')
+    else:
+        return HttpResponse('ERROR')
     
 
         

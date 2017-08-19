@@ -8,27 +8,48 @@ from django.template.loader import get_template
 from django_cas_ng import views as baseviews
 from .models import User, Homework, Issue
 
-# Create your views here.
+############################ 登录界面 ############################################################
 def index(request):
-    # 如果已登录则跳转到实验台
-    if request.user.is_authenticated():
-        return HttpResponseRedirect('/home')
     # 如果未登录展现登录界面
-    else:
+    if not request.user.is_authenticated():
         template = get_template('login.html')
         return HttpResponse(template.render(locals()))
 
+    # 查看是否是本课堂老师或学生，是则做相应的跳转，不是则展现不是本课堂学生的界面
+    user = request.user.username
+    qu = User.objects.filter(student_id=user)
+    if qu:
+        if qu[0].user_type == 1:
+            return HttpResponseRedirect('/home')
+        else:
+            return HttpResponseRedirect('/teacher')
+    else:
+        context = {}
+        context['allow'] = False
+        return render(request, 'login.html', context)
+
+########################### 学生功能界面 ###########################################################
 def home(request):
     # 如果未登录跳回首页
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/')
 
+    # 查看是否是本课堂老师或学生，是则做相应的跳转，不是则跳回首页
     user = request.user.username
+    qu = User.objects.filter(student_id=user)
+    if qu:
+        if qu[0].user_type == 1:
+            qu = qu[0]
+        else:
+            return HttpResponseRedirect('/teacher')
+    else:
+        return HttpResponseRedirect('/')
+
     issue = 1
     template = get_template('home.html')
-    qu = User.objects.get(student_id=user)
     qi_all = Issue.objects.all()
-    qh = Homework.objects.get(student_id=user, issue_id=issue)
+    qh = Homework.objects.filter(student_id=user, issue_id=issue)
+    
     return HttpResponse(template.render(locals()))
         
 
@@ -37,12 +58,22 @@ def mywork(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/')
 
-    user = request.user.username
     issue = 1
+    user = request.user.username
+    qu = User.objects.filter(student_id=user)
+    if qu:
+        if qu[0].user_type == 1:
+            qu = qu[0]
+        else:
+            return HttpResponseRedirect('/teacher')
+    else:
+        return HttpResponseRedirect('/')
+    
     template = get_template('mywork.html')
-    qu = User.objects.get(student_id=user)
-    qi = Issue.objects.get(id=issue)
-    qh = Homework.objects.get(student_id=user, issue_id=issue)
+    qi = Issue.objects.filter(id=issue)
+    if qi:
+        qi = qi[0]
+    qh = Homework.objects.filter(student_id=user, issue_id=issue)
     return HttpResponse(template.render(locals()))
 
 def myinfo(request):
@@ -51,10 +82,57 @@ def myinfo(request):
         return HttpResponseRedirect('/')
 
     user = request.user.username
+    qu = User.objects.filter(student_id=user)
+    if qu:
+        if qu[0].user_type == 1:
+            qu = qu[0]
+        else:
+            return HttpResponseRedirect('/teacher')
+    else:
+        return HttpResponseRedirect('/')
+
     template = get_template('myinfo.html')
-    q = User.objects.filter(student_id=user)[0]
     return HttpResponse(template.render(locals()))
     
+######################## 老师功能界面 ###################################################
+def teacher(request):
+    # 如果未登录跳回首页
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
 
-        
+    # 查看是否是本课堂老师或学生，是则做相应的跳转，不是则跳回首页
+    user = request.user.username
+    qu = User.objects.filter(student_id=user)
+    if qu:
+        if qu[0].user_type == 2:
+            qu = qu[0]
+        else:
+            return HttpResponseRedirect('/home')
+    else:
+        return HttpResponseRedirect('/')
 
+    permission = True
+    template = get_template('teacher/teacher.html')
+    qi_all = Issue.objects.all()
+    return HttpResponse(template.render(locals()))
+
+def students(request):
+    # 如果未登录跳回首页
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+
+    # 查看是否是本课堂老师或学生，是则做相应的跳转，不是则跳回首页
+    user = request.user.username
+    qu = User.objects.filter(student_id=user)
+    if qu:
+        if qu[0].user_type == 2:
+            qu = qu[0]
+        else:
+            return HttpResponseRedirect('/home')
+    else:
+        return HttpResponseRedirect('/')
+
+    permission = True
+    template = get_template('teacher/students.html')
+    qs_all = User.objects.filter(user_type=1)
+    return HttpResponse(template.render(locals()))

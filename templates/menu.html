@@ -1,5 +1,28 @@
+<!-- 学生模式 -->
+{% if not permission %}
 <div class="list-group" id="menulist">
-  <a href="/home" class="list-group-item">总览</a>
-  <a href="/home/mywork" class="list-group-item">我的作业</a>
-  <a href="/home/myinfo" class="list-group-item">个人中心</a>
+  <a href="/home/" class="list-group-item">总览</a>
+  <a href="/home/mywork/" class="list-group-item">我的作业</a>
+  <a href="/home/myinfo/" class="list-group-item">个人中心</a>
 </div>
+
+<!-- 教师模式 -->
+{% else %}
+<div class="list-group" id="menulist">
+    <a href="/teacher/" class="list-group-item">总览</a>
+    <a href="/teacher/students/" class="list-group-item">学生管理</a>
+    <a href="/teacher/issues/" class="list-group-item">作业管理</a>
+</div>
+{% endif %}
+
+<script>
+    //根据地址栏的路径将对应的菜单设置为active状态
+    var path = window.location.pathname;
+    var menus = $('#menulist').children('a');
+    var menus_num = menus.length;
+    for(var i=0; i<menus_num; i++){
+        if(menus[i].getAttribute('href') == path){
+            $(menus[i]).addClass('active');
+        }
+    }
+</script>

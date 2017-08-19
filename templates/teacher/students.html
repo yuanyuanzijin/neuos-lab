@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block header %}学生管理{% endblock %}
+
+{% block content %}
+
+<div class="panel panel-success" style="max-width: 700px">
+    <div class="panel-heading">
+        <h3 class="panel-title">学生导入</h3>
+    </div>
+    <div class="panel-body">
+        <button class="btn btn-default" type="submit">学生批量导入</button>
+        <button class="btn btn-default" type="submit">手动添加</button>
+    </div>
+</div>
+
+<div class="panel panel-success" style="max-width: 900px">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        <h3 class="panel-title">所有学生</h3>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+          <th>学号</th>
+          <th>姓名</th>
+          <th>Github</th>
+          <th>操作</th>
+        </thead>
+
+        {% for qs in qs_all %}
+        <tr>
+          <td>{{qs.student_id}}</td>
+          <td>{{qs.name}}</td>
+          <td>{{qs.github}}</td>
+          <td></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+{% endblock %}

@@ -42,7 +42,7 @@
 </div>
 
 {% if qi.issued %}
-<div class="panel panel-info" style="max-width: 600px">
+<div class="panel panel-info" style="max-width: 700px">
     <div class="panel-heading">
         <h3 class="panel-title">作业下载</h3>
      </div>
@@ -51,12 +51,16 @@
   </div>
 </div>
 
-<div class="panel panel-warning" style="max-width: 600px">
+<div class="panel panel-warning" style="max-width: 700px">
     <div class="panel-heading">
         <h3 class="panel-title">作业提交</h3>
     </div>
 
-    <div class="panel-body">
+    <div class="panel-body" id="div_submit_none" style="display:none">
+        您还没有获取作业，无法提交
+    </div>
+    <div class="panel-body" id="div_submit" style="display:none">
+      {% if qu.github %}
         {% if qi.allow_submit %}
         <label for="basic-url">请输入作业repo名称</label>
         <div class="input-group" style="max-width: 80%">
@@ -78,11 +82,14 @@
         {% else %}
         <p style="color: red">对不起，老师已关闭提交入口</p>
         {% endif %}
+      {% else %}
+      <p>您还没有绑定Github，无法提交</p>
+      {% endif %}
     </div>
 </div>
 
 
-<div class="panel panel-success" style="width: 600px">
+<div class="panel panel-success" style="max-width: 700px">
     <div class="panel-heading">
         <h3 class="panel-title">作业检测</h3>
     </div>
@@ -101,9 +108,27 @@
 
 
 <script>
+    {% if qh %}
+        exist = true;
+    {% else %}
+        exist = false;
+    {% endif %}
+    console.log(exist);
+    if(exist){
+        $('#div_submit').css('display', 'block');
+    }else{
+        $('#div_submit_none').css('display', 'block');
+    }
+
+
+
     $('#btn_repoinput').on('click', function(){
-        var $btn = $(this).button('loading');
         repo = $('#repo_input').val();
+        if(!repo){
+            return;
+        }
+        var $btn = $(this).button('loading');
+        
         $.ajax({
             type: "GET",
             url: '/api/updaterepo',
@@ -112,7 +137,6 @@
                 repo: repo,
             },
             success: function (data) {
-                console.log(data)
                 if(data == 'SUCCESS'){
                     $('#repoback').modal({
                         backdrop: 'static',

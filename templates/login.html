@@ -10,9 +10,14 @@
 	<div class="titulo">NEU OS实验分发系统</div>
 	<form action="#" method="get" enctype="application/x-www-form-urlencoded">
         {% if request.user.is_authenticated %}
-            <p class="login_form_text">欢迎回来，{{ request.user.username }}</p>
-            <a href="/home" class="enviar">进入我的实验台</a>
-            <a href="/accounts/logout" class="enviar logout">退出</a>
+            {% if allow %}
+                <p class="login_form_text">欢迎回来，{{ request.user.username }}</p>
+                <a href="/home" class="enviar">进入我的实验台</a>
+                <a href="/accounts/logout" class="enviar logout">退出</a>
+            {% else %}
+                <p class="login_form_text">对不起，{{ request.user.username }}不是本课堂的学生</p>
+                <a href="/accounts/logout" class="enviar logout">更换账号</a>
+            {% endif %}
         {% else %}
             <p class="login_form_text">请使用校园账号登录</p>
             <a href="/accounts/login" class="enviar">登录</a>

@@ -11,7 +11,27 @@
     </div>
 {% endif %}
 
-<div class="panel panel-default" style="max-width: 900px">
+<div class="panel panel-info" style="max-width: 600px">
+  <!-- Default panel contents -->
+  <div class="panel-heading">个人信息</div>
+
+  <table class="table table-hover">
+      <thead>
+        <th>学号</th>
+        <th>姓名</th>
+        <th>Github</th>
+      </thead>
+
+      <tr>
+        <td>{{qu.student_id}}</td>
+        <td>{% if qu.name %}{{qu.name}}{% else %}未填写{% endif %}</td>
+        <td>{% if qu.github %}{{qu.github}}{% else %}未绑定{% endif %}</td>
+      </tr>
+  </table>
+</div>
+
+
+<div class="panel panel-success" style="max-width: 900px">
     <!-- Default panel contents -->
     <div class="panel-heading">作业概况</div>
 
