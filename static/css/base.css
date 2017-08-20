@@ -32,3 +32,16 @@ html{
     border-left: 0px;
     border-right: 0px;
 }
+.red{
+    color: red;
+}
+.green{
+    color: green;
+}
+.gray{
+    color: gray;
+}
+
+.del_btn{
+    cursor: pointer
+}

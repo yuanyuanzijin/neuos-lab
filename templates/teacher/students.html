@@ -9,7 +9,7 @@
         <h3 class="panel-title">学生导入</h3>
     </div>
     <div class="panel-body">
-        <button class="btn btn-default" type="submit">学生批量导入</button>
+        <button class="btn btn-default" data-toggle="modal" data-target="#uploadModal">从文件中批量导入</button>
         <button class="btn btn-default" type="submit">手动添加</button>
     </div>
 </div>
@@ -31,12 +31,89 @@
         {% for qs in qs_all %}
         <tr>
           <td>{{qs.student_id}}</td>
-          <td>{{qs.name}}</td>
-          <td>{{qs.github}}</td>
-          <td></td>
+          <td>{% if qs.name %}{{qs.name}}{% else %}——{% endif %}</td>
+          <td>{% if qs.github %}<a href="http://github.com/{{qs.github}}" target="_blank">{{qs.github}}</a>{% else %}未绑定{% endif %}</td>
+          <td><a class="del_btn">删除</a></td>
         </tr>
         {% endfor %}
     </table>
-
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">文件导入</h4>
+            </div>
+            <div class="modal-body">
+                <input id="upload_file" type="file" name="myfile" onchange="Javascript:validate_img(this);" style="width:200px; margin-bottom:20px;" />
+                <p>支持文件格式：xlsx或xls</p>
+                <p>第一列为学号，第二列为姓名（可空），重复学生自动去重</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+              <button id="upload_file_btn" type="submit" class="btn btn-primary">导入</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+<script>
+
+$("#upload_file_btn").on("click", function(){
+    var formData = new FormData();
+    formData.append('myfile', $('#upload_file')[0].files[0]);
+    $.ajax({
+        url: "/api/uploadfile",
+        type: 'POST',
+        cache: false,
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType:"json",
+        complete : function(back) {
+            if(back.responseText == 'SUCCESS'){
+                window.location.reload();
+            }
+        }
+    })
+})
+
+
+//限制上传文件的类型和大小
+function validate_img(ele){
+    var file = ele.value;
+    if(!/.(xlsx|xls)$/.test(file)){
+        alert("文件类型必须是xlsx或xls格式");
+        $('#upload_file')[0].files[0] = '';
+        return false;
+    }
+}
+
+$('.del_btn').on('click', function(){
+    del_id = $(this).parent().prevAll()[2].innerText;
+    if(window.confirm('确认要删除学生'+del_id+'吗？')){
+        $.ajax({
+            url: "/api/delstudents",
+            type: 'GET',
+            data: {
+                studentid: del_id
+            },
+            success : function(back) {
+                if(back == 'SUCCESS'){
+                    window.location.reload();
+                }
+            }
+        })
+    }else{
+        return false
+    }
+})
+
+
+</script>
+
 {% endblock %}

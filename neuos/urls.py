@@ -22,6 +22,10 @@ import django_cas_ng
 apipatterns = [
     url(r'^updatename', update_name),
     url(r'^updaterepo', update_repo),
+    url(r'^(switchissued)', switch),
+    url(r'^(switchallowsubmit)', switch),
+    url(r'^uploadfile', upload_file),
+    url(r'^delstudents', del_students),
 ]
 
 urlpatterns = [
@@ -31,6 +35,7 @@ urlpatterns = [
     url(r'^home/myinfo', myinfo),
     url(r'^teacher/$', teacher),
     url(r'^teacher/students', students),
+    url(r'^teacher/issues', issues),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/login$', django_cas_ng.views.login, name='cas_ng_login'),
     url(r'^accounts/logout$', django_cas_ng.views.logout, name='cas_ng_logout'),

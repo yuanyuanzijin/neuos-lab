@@ -134,5 +134,27 @@ def students(request):
 
     permission = True
     template = get_template('teacher/students.html')
-    qs_all = User.objects.filter(user_type=1)
+    qs_all = User.objects.filter(user_type=1).order_by('student_id')
+    return HttpResponse(template.render(locals()))
+
+def issues(request):
+    # 如果未登录跳回首页
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+
+    # 查看是否是本课堂老师或学生，是则做相应的跳转，不是则跳回首页
+    user = request.user.username
+    qu = User.objects.filter(student_id=user)
+    if qu:
+        if qu[0].user_type == 2:
+            qu = qu[0]
+        else:
+            return HttpResponseRedirect('/home')
+    else:
+        return HttpResponseRedirect('/')
+
+    issue = 1
+    permission = True
+    template = get_template('teacher/issues.html')
+    qi = Issue.objects.filter(id=issue)[0]
     return HttpResponse(template.render(locals()))

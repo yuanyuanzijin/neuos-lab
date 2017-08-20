@@ -7,39 +7,39 @@
 {% block content %}
 
 <div style="font-size: 16px;">
-    <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline">
-        <option>作业一</option>
-    </select>
-
-    <span style="margin-left: 20px;">
-        {% if qi.issued %}
-            <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
-            已下发
-        {% else %}
-            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-            未下发
-        {% endif %}
-    </span>
-
-    <span style="margin-left: 20px">
-        {% if qi.allow_submit %}
-            <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
-            可提交
-        {% else %}
-            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-            不可提交
-        {% endif %}
-    </span>
-
-    <span style="margin-left: 20px">
-        截止时间：
-        {% if qi.deadline %}
-            <b>{{ qi.deadline }}</b>
-        {% else %}
-            未设置
-        {% endif %}
-    </span>
-</div>
+        <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline">
+            <option>作业一</option>
+        </select>
+    
+        <span style="margin-left: 20px;">
+            {% if qi.issued %}
+                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                <span class="green">已下发</span>
+            {% else %}
+                <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                <span class="red">未下发</span>
+            {% endif %}
+        </span>
+    
+        <span style="margin-left: 20px">
+            {% if qi.allow_submit %}
+                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                <span class="green">可提交</span>
+            {% else %}
+                <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                <span class="red">不可提交</span>
+            {% endif %}
+        </span>
+    
+        <span style="margin-left: 20px">
+            截止时间：
+            {% if qi.deadline %}
+                <b>{{ qi.deadline }}</b>
+            {% else %}
+                未设置
+            {% endif %}
+        </span>
+    </div>
 
 {% if qi.issued %}
 <div class="panel panel-info" style="max-width: 700px">
@@ -123,6 +123,7 @@
 
 
     $('#btn_repoinput').on('click', function(){
+        issue = 1;
         repo = $('#repo_input').val();
         if(!repo){
             return;
@@ -133,7 +134,7 @@
             type: "GET",
             url: '/api/updaterepo',
             data: {
-                issue: 1,
+                issue: issue,
                 repo: repo,
             },
             success: function (data) {

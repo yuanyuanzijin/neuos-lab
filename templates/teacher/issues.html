@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block header %}作业管理{% endblock %}
+
+{% block content %}
+
+<div style="font-size: 16px;">
+        <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline">
+            <option>作业一</option>
+        </select>
+    
+        <span style="margin-left: 20px;">
+            {% if qi.issued %}
+                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                <span class="green">已下发</span>
+            {% else %}
+                <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                <span class="red">未下发</span>
+            {% endif %}
+        </span>
+    
+        <span style="margin-left: 20px">
+            {% if qi.allow_submit %}
+                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                <span class="green">可提交</span>
+            {% else %}
+                <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                <span class="red">不可提交</span>
+            {% endif %}
+        </span>
+    
+        <span style="margin-left: 20px">
+            截止时间：
+            {% if qi.deadline %}
+                <b>{{ qi.deadline }}</b>
+            {% else %}
+                未设置
+            {% endif %}
+        </span>
+    </div>
+
+<div class="panel panel-success" style="max-width: 600px">
+    <div class="panel-heading">
+        <h3 class="panel-title">作业操作</h3>
+    </div>
+    <div class="panel-body">
+        {% if qi.issued %}
+            <span>是否下发：<span class="green">已下发</span></span>
+            <button id="switch_issued" action="close" class="btn btn-default" type="submit">停止</button>
+        {% else %}
+            <span>是否下发：<span class="red">未下发</span></span>
+            <button id="switch_issued" action="open" class="btn btn-default" type="submit">下发作业</button>
+        {% endif %}
+        <hr>
+
+        {% if qi.allow_submit %}
+            <span>提交入口：<span class="green">已开启</span></span>
+            <button id="switch_allow_submit" action="close" class="btn btn-default" type="submit">关闭</button>
+        {% else %}
+            {% if qi.issued %}
+                <span>提交入口：<span class="red">已关闭</span></span>
+                <button id="switch_allow_submit" action="open" class="btn btn-default" type="submit">开启</button>
+            {% else %}  
+                <span>提交入口：<span class="gray">请先下发作业</span></span>
+            {% endif %}
+        {% endif %}
+        <hr>
+
+        {% if qi.deadline %}
+            <span>截止时间：{{qi.deadline}}</span>
+            <button class="btn btn-default" type="submit">修改</button>
+        {% else %}
+            <span>截止时间：<span class="red">未设置</span></span>
+            <button class="btn btn-default" type="submit">设置</button>
+        {% endif %}
+        
+    </div>
+</div>
+
+<div class="panel panel-success" style="max-width: 900px">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        <h3 class="panel-title">作业列表</h3>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+          <th>学号</th>
+          <th>姓名</th>
+          <th>Github</th>
+          <th>操作</th>
+        </thead>
+
+        {% for qs in qs_all %}
+        <tr>
+          <td>{{qs.student_id}}</td>
+          <td>{{qs.name}}</td>
+          <td>{{qs.github}}</td>
+          <td></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+
+<script>
+$('#switch_issued').on('click', function(){
+    issue = 1;
+    action = $('#switch_issued')[0].getAttribute('action');
+
+    $.ajax({
+        type: "GET",
+        url: '/api/switchissued',
+        data: {
+            issue: issue,
+            action: action,
+        },
+        success: function (data) {
+            if(data == 'SUCCESS'){
+                window.location.reload();
+            }else{
+                console.log(data);
+            }
+        }
+    })
+})
+
+$('#switch_allow_submit').on('click', function(){
+    issue = 1;
+    action = $('#switch_allow_submit')[0].getAttribute('action');
+
+    $.ajax({
+        type: "GET",
+        url: '/api/switchallowsubmit',
+        data: {
+            issue: issue,
+            action: action,
+        },
+        success: function (data) {
+            if(data == 'SUCCESS'){
+                window.location.reload();
+            }else{
+                console.log(data);
+            }
+        }
+    })
+})
+</script>
+
+{% endblock %}
