@@ -26,6 +26,7 @@ apipatterns = [
     url(r'^(switchallowsubmit)', switch),
     url(r'^uploadfile', upload_file),
     url(r'^delstudents', del_students),
+    url(r'^addstudent', add_student)
 ]
 
 urlpatterns = [

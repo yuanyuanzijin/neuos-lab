@@ -135,6 +135,7 @@ def students(request):
     permission = True
     template = get_template('teacher/students.html')
     qs_all = User.objects.filter(user_type=1).order_by('student_id')
+    qs_all_num = len(qs_all)
     return HttpResponse(template.render(locals()))
 
 def issues(request):

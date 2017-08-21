@@ -45,3 +45,12 @@ html{
 .del_btn{
     cursor: pointer
 }
+
+#datetime-choose .date{
+    display: inline;
+    width: 200px;
+}
+#datetime-choose .time{
+    display: inline;
+    width: 80px;
+}
