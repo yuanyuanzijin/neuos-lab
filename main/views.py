@@ -49,6 +49,8 @@ def home(request):
     template = get_template('home.html')
     qi_all = Issue.objects.all()
     qh = Homework.objects.filter(student_id=user, issue_id=issue)
+    if qh:
+        qh = qh[0]
     
     return HttpResponse(template.render(locals()))
         
@@ -74,6 +76,8 @@ def mywork(request):
     if qi:
         qi = qi[0]
     qh = Homework.objects.filter(student_id=user, issue_id=issue)
+    if qh:
+        qh = qh[0]
     return HttpResponse(template.render(locals()))
 
 def myinfo(request):
@@ -114,6 +118,10 @@ def teacher(request):
     permission = True
     template = get_template('teacher/teacher.html')
     qi_all = Issue.objects.all()
+    qh_all_submit = Homework.objects.filter(issue_id=1, repo__isnull=False)
+    qh_all_pass = Homework.objects.filter(issue_id=1, check_result=True)
+    submit_num = len(qh_all_submit)
+    pass_num = len(qh_all_pass)
     return HttpResponse(template.render(locals()))
 
 def students(request):
@@ -158,4 +166,5 @@ def issues(request):
     permission = True
     template = get_template('teacher/issues.html')
     qi = Issue.objects.filter(id=issue)[0]
+    qh_all = Homework.objects.filter(issue_id=issue)
     return HttpResponse(template.render(locals()))

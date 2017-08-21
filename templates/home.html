@@ -48,18 +48,18 @@
         {% for qi in qi_all %}
         <tr>
           <td>{{qi.id}}</td>
-          <td>{% if qi.allow_submit %}开启{% else %}关闭{% endif %}</td>
+          <td>{% if qi.allow_submit %}<span class="green">开启</span>{% else %}<span class="red">关闭</span>{% endif %}</td>
           <td>{{qi.deadline}}</td>
           <td>
             {% if qh.repo %}
             {{qh.submit_time}}
             {% else %}
-            未提交
+            <span class="red">未提交</span>
             {% endif %}
           </td>
           <td>
             {% if qh.submit_time %}
-                {% if qh.submit_time < qi.deadline %}是{% else %}否{% endif %}
+                {% if qh.submit_time < qi.deadline %}<span class="green">是</span>{% else %}<span class="red">否</span>{% endif %}
             {% else %}
             ——
             {% endif %}
@@ -67,12 +67,12 @@
           <td>
             {% if qh.check_result %}
                 {% ifequal qh.check_result 1 %}
-                通过
+                <span class="green">通过</span>
                 {% else %}
-                未通过
+                <span class="red">未通过</span>
                 {% endifequal %}
             {% else %}
-            未检测
+            <span class="red">未检测</span>
             {% endif %}
           </td>
         </tr>

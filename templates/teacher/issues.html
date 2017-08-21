@@ -86,16 +86,20 @@
     <table class="table table-hover">
         <thead>
           <th>学号</th>
-          <th>姓名</th>
-          <th>Github</th>
+          <th>repo</th>
+          <th>提交时间</th>
+          <th>是否按时</th>
+          <th>检测结果</th>
           <th>操作</th>
         </thead>
 
-        {% for qs in qs_all %}
+        {% for qh in qh_all %}
         <tr>
-          <td>{{qs.student_id}}</td>
-          <td>{{qs.name}}</td>
-          <td>{{qs.github}}</td>
+          <td>{{qh.student_id}}</td>
+          <td>{{qh.repo}}</td>
+          <td>{{qh.submit_time}}</td>
+          <td></td>
+          <td>{{qh.check_result}}</td>
           <td></td>
         </tr>
         {% endfor %}
@@ -114,9 +118,8 @@
                     <div class="form-group">
                         <label for="exampleInputEmail1">作业提交截止时间</label>
                         <div id="datetime-choose">
-                            <input type="date" class="form-control date">
-                            <input type="number" class="form-control time" name="hour" id="hour" min="0" max="23">
-                            <input type="number" class="form-control time" name="minute" id="minute" min="0" max="59">
+                            <input id="choose-date" type="date" class="form-control date" value="2017-08-31">
+                            <input id="choose-time" type="time" class="form-control time" value="20:00">
                         </div>
                     </div>
                     <p class="help-block">截止时间过后学生仍可提交作业，但会被标注为晚交</p>

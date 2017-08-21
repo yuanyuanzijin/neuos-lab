@@ -24,9 +24,12 @@
         {% for qi in qi_all %}
         <tr>
           <td>{{qi.id}}</td>
-          <td>{{qi.issued}}</td>
+          <td>{% if qi.issued %}是{% else %}否{% endif %}</td>
           <td>{% if qi.allow_submit %}开启{% else %}关闭{% endif %}</td>
           <td>{{qi.deadline}}</td>
+          <td>{{submit_num}}</td>
+          <td>{{pass_num}}</td>
+          <td><a href="/teacher/issues/">管理</a></td>
         </tr>
         {% endfor %}
     </table>

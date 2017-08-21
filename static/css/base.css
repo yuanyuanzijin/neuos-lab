@@ -43,14 +43,14 @@ html{
 }
 
 .del_btn{
-    cursor: pointer
+    cursor: pointer;
 }
 
 #datetime-choose .date{
     display: inline;
-    width: 200px;
+    width: 160px;
 }
 #datetime-choose .time{
     display: inline;
-    width: 80px;
+    width: 100px;
 }
