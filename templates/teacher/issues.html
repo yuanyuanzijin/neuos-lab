@@ -80,28 +80,46 @@
 <div class="panel panel-success" style="max-width: 900px">
     <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">作业列表</h3>
+        <h3 class="panel-title">已提交作业</h3>
     </div>
 
     <table class="table table-hover">
         <thead>
           <th>学号</th>
-          <th>repo</th>
           <th>提交时间</th>
+          <th>repo</th>
           <th>是否按时</th>
           <th>检测结果</th>
           <th>操作</th>
         </thead>
 
         {% for qh in qh_all %}
-        <tr>
-          <td>{{qh.student_id}}</td>
-          <td>{{qh.repo}}</td>
-          <td>{{qh.submit_time}}</td>
-          <td></td>
-          <td>{{qh.check_result}}</td>
-          <td></td>
-        </tr>
+            {% if qh.repo %}
+            <tr>
+            <td>{{qh.student_id}}</td>
+            <td>{{qh.submit_time}}</td>
+            <td>{{qh.repo}}</td>
+            <td>
+                {% if qh.repo %}
+                    {% if qh.submit_time < qi.deadline %}<span class="green">是</span>{% else %}<span class="red">否</span>{% endif %}
+                {% else %}
+                ——
+                {% endif %}
+            </td>
+            <td>
+                {% if qh.check_result %}
+                    {% ifequal qh.check_result 1 %}
+                    <span class="green">通过</span>
+                    {% else %}
+                    <span class="red">未通过</span>
+                    {% endifequal %}
+                {% else %}
+                <span class="gray">未检测</span>
+                {% endif %}
+            </td>
+            <td><button class="btn btn-default" type="submit">验收</button> <a href="https://github.com/" target="_blank"><button class="btn btn-default">查看</button></a></td>
+            </tr>
+            {% endif %}
         {% endfor %}
     </table>
 </div>

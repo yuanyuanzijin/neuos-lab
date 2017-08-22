@@ -24,8 +24,8 @@
         {% for qi in qi_all %}
         <tr>
           <td>{{qi.id}}</td>
-          <td>{% if qi.issued %}是{% else %}否{% endif %}</td>
-          <td>{% if qi.allow_submit %}开启{% else %}关闭{% endif %}</td>
+          <td>{% if qi.issued %}<span class='green'>是</span>{% else %}<span class='red'>否</span>{% endif %}</td>
+          <td>{% if qi.allow_submit %}<span class='green'>开启</span>{% else %}<span class='red'>关闭</span>{% endif %}</td>
           <td>{{qi.deadline}}</td>
           <td>{{submit_num}}</td>
           <td>{{pass_num}}</td>

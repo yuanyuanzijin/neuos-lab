@@ -46,7 +46,7 @@ def home(request):
         return HttpResponseRedirect('/')
 
     issue = 1
-    template = get_template('home.html')
+    template = get_template('home/home.html')
     qi_all = Issue.objects.all()
     qh = Homework.objects.filter(student_id=user, issue_id=issue)
     if qh:
@@ -71,7 +71,7 @@ def mywork(request):
     else:
         return HttpResponseRedirect('/')
     
-    template = get_template('mywork.html')
+    template = get_template('home/mywork.html')
     qi = Issue.objects.filter(id=issue)
     if qi:
         qi = qi[0]
@@ -95,7 +95,7 @@ def myinfo(request):
     else:
         return HttpResponseRedirect('/')
 
-    template = get_template('myinfo.html')
+    template = get_template('home/myinfo.html')
     return HttpResponse(template.render(locals()))
     
 ######################## 老师功能界面 ###################################################

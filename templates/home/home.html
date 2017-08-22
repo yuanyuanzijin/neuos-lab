@@ -24,8 +24,8 @@
 
       <tr>
         <td>{{qu.student_id}}</td>
-        <td>{% if qu.name %}{{qu.name}}{% else %}未填写{% endif %}</td>
-        <td>{% if qu.github %}{{qu.github}}{% else %}未绑定{% endif %}</td>
+        <td>{% if qu.name %}{{qu.name}}{% else %}<span class='red'>未填写</span>{% endif %}</td>
+        <td>{% if qu.github %}{{qu.github}}{% else %}<span class='red'>未绑定</span>{% endif %}</td>
       </tr>
   </table>
 </div>
@@ -42,7 +42,7 @@
           <th>截止日期</th>
           <th>提交时间</th>
           <th>是否按时</th>
-          <th>检测结果</th>
+          <th>操作</th>
         </thead>
 
         {% for qi in qi_all %}
@@ -64,17 +64,7 @@
             ——
             {% endif %}
           </td>
-          <td>
-            {% if qh.check_result %}
-                {% ifequal qh.check_result 1 %}
-                <span class="green">通过</span>
-                {% else %}
-                <span class="red">未通过</span>
-                {% endifequal %}
-            {% else %}
-            <span class="red">未检测</span>
-            {% endif %}
-          </td>
+          <td><a href="/home/mywork/">查看作业</a></td>
         </tr>
         {% endfor %}
     </table>
