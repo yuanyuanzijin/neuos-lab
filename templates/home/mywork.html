@@ -46,8 +46,15 @@
     <div class="panel-heading">
         <h3 class="panel-title">作业下载</h3>
      </div>
-    <div class="panel-body">
-        <button class="btn btn-default" type="submit">获取我的作业</button>
+    <div class="panel-body" id="div-getenv">
+        <button id="btn-getenv" class="btn btn-default" type="submit">下载实验环境</button>
+        <span class="gray">剩余次数：
+            {% if qh %}
+            <span id="span-times">{{qh.download_limit}}</span>
+            {% else %}
+            <span id="span-times">3</span>
+            {% endif %}
+        </span>
   </div>
 </div>
 
@@ -70,6 +77,7 @@
             <span class="input-group-btn">
                 <button id="btn_repoupdate" class="btn btn-default" type="button">修改</button>
                 <button id="btn_repoinput" class="btn btn-success" type="button" style="display: none">提交作业</button>
+                <a href="https://github.com/{{qu.github}}/{{qh.repo}}" target="_blank" style="margin-left: 10px"><button class="btn btn-info">查看作业</button></a>                
             </span>
             {% else %}
             <input type="text" class="form-control" id="repo_input" aria-describedby="basic-addon3">
@@ -120,6 +128,21 @@
         $('#div_submit_none').css('display', 'block');
     }
 
+download_limit = '{{qh.download_limit}}';
+console.log(download_limit);
+if(download_limit && download_limit <= 0){
+    $('#btn-getenv').attr('disabled', 'true');
+    $('#span-times').html('0，如有问题请联系老师');
+}
+
+$('#btn-getenv').on('click', function(){
+    $('#span-times').html($('#span-times').html()-1);
+    if($('#span-times').html() == 0){
+        $('#btn-getenv').attr('disabled', 'true');
+        $('#span-times').html('已达上限，如有问题请联系老师');
+    }
+    window.location.href = '/api/getenv?issue=1';
+})
 
 
     $('#btn_repoinput').on('click', function(){

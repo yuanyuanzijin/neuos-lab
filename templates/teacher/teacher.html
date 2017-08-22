@@ -24,8 +24,20 @@
         {% for qi in qi_all %}
         <tr>
           <td>{{qi.id}}</td>
-          <td>{% if qi.issued %}<span class='green'>是</span>{% else %}<span class='red'>否</span>{% endif %}</td>
-          <td>{% if qi.allow_submit %}<span class='green'>开启</span>{% else %}<span class='red'>关闭</span>{% endif %}</td>
+          <td>
+              {% if qi.issued %}
+              <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+              {% else %}
+              <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+              {% endif %}
+          </td>
+          <td>
+              {% if qi.allow_submit %}
+              <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+              {% else %}
+              <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+              {% endif %}
+            </td>
           <td>{{qi.deadline}}</td>
           <td>{{submit_num}}</td>
           <td>{{pass_num}}</td>

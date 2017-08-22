@@ -8,6 +8,8 @@ from django.template.loader import get_template
 from django_cas_ng import views as baseviews
 from .models import User, Homework, Issue
 from django.utils import timezone
+from django.db.models import F
+from django.core.files.storage import get_storage_class
 import os, xlrd
 
 ################################## 学生操作 ################################################
@@ -32,13 +34,40 @@ def update_repo(request):
     issue = request.GET['issue']
     user = request.user.username
     time = timezone.now()
-    homework = Homework.objects.filter(student_id=user, issue_id=issue)
+    homework = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
     if homework:
         homework.update(repo=repo, submit_time=time)
         return HttpResponse('SUCCESS')
     else:
         return HttpResponse('ERROR')
+
+# 下载实验环境
+def get_environment(request):
+    # 如果未登录则跳转到实验台
+    if not request.user.is_authenticated():
+        return HttpResponse('not login')
+
+    user = request.user.username
+    issue = request.GET['issue']
+    q = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
+    if q:
+        if int(q[0].download_limit) <= 0:
+            return HttpResponse('Download times reach max value.')
+        q.update(download_limit=F('download_limit') - 1)
+    else:
+        Homework.objects.create(student_id=User.objects.get(student_id=user), download_limit=2, issue_id=issue)
+
+    filename = 'lv1-ans.tar.gz'
+    baseDir = os.path.dirname(os.path.abspath(__name__))
+    filepath = os.path.join(baseDir, 'tmp', 'experiments', 'lv1')
+    storge = get_storage_class()(filepath)
     
+    respose = HttpResponse(storge.open(filename))
+    respose['Content-Type'] = 'application/octet-stream'
+    respose['Content-Disposition'] = 'attachment;filename="{0}"'.format(filename)
+    return respose
+
+
 ################################ 老师操作 #######################################################
 # 作业下发，允许提交开关设置
 def switch(request, target):

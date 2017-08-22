@@ -48,7 +48,7 @@ def home(request):
     issue = 1
     template = get_template('home/home.html')
     qi_all = Issue.objects.all()
-    qh = Homework.objects.filter(student_id=user, issue_id=issue)
+    qh = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
     if qh:
         qh = qh[0]
     
@@ -75,7 +75,7 @@ def mywork(request):
     qi = Issue.objects.filter(id=issue)
     if qi:
         qi = qi[0]
-    qh = Homework.objects.filter(student_id=user, issue_id=issue)
+    qh = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
     if qh:
         qh = qh[0]
     return HttpResponse(template.render(locals()))
@@ -166,5 +166,6 @@ def issues(request):
     permission = True
     template = get_template('teacher/issues.html')
     qi = Issue.objects.filter(id=issue)[0]
+    qs_not_all = User.objects.filter(user_type=1).order_by('student_id').exclude(homework__repo__isnull=False)
     qh_all = Homework.objects.filter(issue_id=issue)
     return HttpResponse(template.render(locals()))

@@ -4,9 +4,9 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container" style="width:100%">
       <h4>姓名</h4>
-      <div class="input-group" style="width: 300px">
+      <div class="input-group" style="width: 200px">
             {% if qu.name %}
             <input type="text" class="form-control" value="{{qu.name}}" disabled>
             {% else %}
@@ -14,25 +14,31 @@
             <span class="input-group-btn"><button id="openModal" class="btn btn-default" type="button">确认</button></span>
             {% endif %}
       </div>
-      <p class="gray">请确保姓名正确，姓名提交后无法修改</p>
+      <p style="color: #aaa; margin-top: 15px">请确保姓名正确，姓名提交后无法修改</p>
 </div>
 
 
-<div class="container">
+<div class="container" style="width:100%; margin-top:20px">
       <h4>Github</h4>
       {% if qu.github %}
             <p>您已绑定Github账号：<b>{{qu.github}}</b></p>
-            <a href="https://github.com/{{q.github}}" target="_blank"><button class="btn btn-default" type="button">前往我的Github</button></a>
+            <a href="https://github.com/{{qu.github}}" target="_blank"><button class="btn btn-default" type="button">前往我的Github</button></a>
             <p style="color: #aaa; margin-top: 15px">如需更换绑定，请联系管理员</p>
       {% else %}
             <p>您尚未绑定Github账号</p>
-            <button class="btn btn-default" type="button">前往Github绑定</button>
+            <button id="bind-github" class="btn btn-default" type="button">前往Github绑定</button>
+            <p style="color: #aaa; margin-top: 15px">绑定后可提交作业，账号无法解绑</p>
       {% endif %}
 </div>
 
 
 
 <script>
+// 绑定Github
+$('#bind-github').on('click', function(){
+      window.location.href = '/oauth/login';
+})
+
 
 // 点击确认后获取输入值，激活模态框
 $('#openModal').on('click', function(){

@@ -1,6 +1,11 @@
 html{
     overflow: hidden;
 }
+
+td, th{
+    text-align: center;
+}
+
 .homepage{
     width: 100%;
     margin: 0px;

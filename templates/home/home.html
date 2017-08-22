@@ -11,7 +11,7 @@
     </div>
 {% endif %}
 
-<div class="panel panel-info" style="max-width: 600px">
+<div class="panel panel-info" style="max-width: 500px">
   <!-- Default panel contents -->
   <div class="panel-heading">个人信息</div>
 
@@ -24,7 +24,13 @@
 
       <tr>
         <td>{{qu.student_id}}</td>
-        <td>{% if qu.name %}{{qu.name}}{% else %}<span class='red'>未填写</span>{% endif %}</td>
+        <td>
+            {% if qu.name %}
+                {{qu.name}}
+            {% else %}
+                <span class='red'>未填写</span>
+            {% endif %}
+        </td>
         <td>{% if qu.github %}{{qu.github}}{% else %}<span class='red'>未绑定</span>{% endif %}</td>
       </tr>
   </table>
@@ -48,18 +54,18 @@
         {% for qi in qi_all %}
         <tr>
           <td>{{qi.id}}</td>
-          <td>{% if qi.allow_submit %}<span class="green">开启</span>{% else %}<span class="red">关闭</span>{% endif %}</td>
+          <td>{% if qi.allow_submit %}<span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>{% else %}<span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>{% endif %}</td>
           <td>{{qi.deadline}}</td>
           <td>
             {% if qh.repo %}
-            {{qh.submit_time}}
+              {{qh.submit_time}}
             {% else %}
-            <span class="red">未提交</span>
+              <span class="red">未提交</span>
             {% endif %}
           </td>
           <td>
             {% if qh.submit_time %}
-                {% if qh.submit_time < qi.deadline %}<span class="green">是</span>{% else %}<span class="red">否</span>{% endif %}
+                {% if qh.submit_time < qi.deadline %}<span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>{% else %}<span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>{% endif %}
             {% else %}
             ——
             {% endif %}
