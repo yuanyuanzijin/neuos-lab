@@ -16,6 +16,7 @@
           <th>是否下发</th>
           <th>提交入口</th>
           <th>截止日期</th>
+          <th>已下载</th>
           <th>已提交</th>
           <th>验收通过</th>
           <th>操作</th>
@@ -39,12 +40,35 @@
               {% endif %}
             </td>
           <td>{{qi.deadline}}</td>
+          <td>{{download_num}}</td>
           <td>{{submit_num}}</td>
           <td>{{pass_num}}</td>
           <td><a href="/teacher/issues/">管理</a></td>
         </tr>
         {% endfor %}
     </table>
+</div>
 
+<div class="panel panel-success" style="max-width: 500px">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        <h3 class="panel-title">学生通览</h3>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+          <th>学生总数</th>
+          <th>Github绑定人数</th>
+          <th>操作</th>
+        </thead>
+
+        {% for qi in qi_all %}
+        <tr>
+          <td>{{student_num}}</td>
+          <td>{{github_num}}</td>
+          <td><a href="/teacher/students/">管理</a></td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 {% endblock %}

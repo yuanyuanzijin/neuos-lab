@@ -117,11 +117,23 @@ def teacher(request):
 
     permission = True
     template = get_template('teacher/teacher.html')
-    qi_all = Issue.objects.all()
-    qh_all_submit = Homework.objects.filter(issue_id=1, repo__isnull=False)
-    qh_all_pass = Homework.objects.filter(issue_id=1, check_result=True)
-    submit_num = len(qh_all_submit)
-    pass_num = len(qh_all_pass)
+    qi_all = Issue.objects.all()                                                # 所有布置的作业
+
+    qh_all = Homework.objects.filter(issue_id=1)                                # 作业1所有下载(学生下载实验环境后才会在Homework表插入数据)
+    download_num = len(qh_all)                                                    # 锁业1所有下载数
+
+    qh_all_submit = qh_all.filter(repo__isnull=False)                                  # 作业1所有提交
+    submit_num = len(qh_all_submit)                                             # 作业1所有提交数
+
+    qh_all_pass = qh_all.filter(check_result=True)                                     # 作业1所有通过
+    pass_num = len(qh_all_pass)                                                 # 作业1所有通过数
+
+    qs_all = User.objects.filter(user_type=1)                                   # 所有学生
+    student_num = len(qs_all)                                                   # 所有学生数
+
+    qs_all_github = qs_all.filter(github__isnull=False)
+    github_num = len(qs_all_github)
+
     return HttpResponse(template.render(locals()))
 
 def students(request):
