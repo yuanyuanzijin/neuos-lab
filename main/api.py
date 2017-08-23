@@ -10,7 +10,7 @@ from .models import User, Homework, Issue
 from django.utils import timezone
 from django.db.models import F
 from django.core.files.storage import get_storage_class
-import os, xlrd
+import os, xlrd, json
 
 ################################## 学生操作 ################################################
 # 更新学生姓名
@@ -201,5 +201,44 @@ def add_student(request):
             q.update(name=add_name)
     else:
         User.objects.create(student_id=add_id, name=add_name)
+
+    return HttpResponse('SUCCESS')
+
+
+######################### 老师学生共用 #####################################
+# 作业检测
+def check_request(request):
+    # 如果未登录则跳转到实验台
+    if not request.user.is_authenticated():
+        return HttpResponse('not login')
+
+    user = request.user.username
+    qu = User.objects.get(student_id=user)
+    user_type = qu.user_type
+    issue = request.GET['issue']
+    if qu.github:
+        github = qu.github
+    else:
+        return HttpResponse('Have not bind Github.')
+
+    if qu.homework.repo:
+        repo = qu.homework.repo
+    else:
+        return HttpResponse('Have not submit homework.')
+    homework_id = qu.homework.id
+
+    data = {
+        'issue': 1,
+        'homework_id': homework_id,
+        'github': github,
+        'repo': repo,
+        'user_type': user_type
+    }
+    data = json.dumps(data)
+
+    # 发送请求给检测后台
+
+
+    Homework.objects.filter(id=homework_id).update(self_check_result=3)
 
     return HttpResponse('SUCCESS')

@@ -35,4 +35,4 @@ def github_callback(request):
     user = request.user.username
     qu = User.objects.filter(student_id=user).update(github=github_name)
 
-    return HttpResponseRedirect('/home/myinfo')
+    return HttpResponseRedirect('/home/myinfo/')

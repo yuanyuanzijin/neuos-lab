@@ -48,6 +48,7 @@
           <th>截止日期</th>
           <th>提交时间</th>
           <th>是否按时</th>
+          <th>检测结果</th>
           <th>操作</th>
         </thead>
 
@@ -65,10 +66,24 @@
           </td>
           <td>
             {% if qh.submit_time %}
-                {% if qh.submit_time < qi.deadline %}<span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>{% else %}<span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>{% endif %}
+                {% if qh.submit_time < qi.deadline %}
+                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                {% else %}
+                <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                {% endif %}
             {% else %}
             ——
             {% endif %}
+          </td>
+          <td>
+            {% if qh.self_check_result == 1 %}
+            <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+            {% elif qh.self_check_result == 2 %}
+            <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+            {% else %}
+            <span class="gray">未检测</span>
+            {% endif %}
+            
           </td>
           <td><a href="/home/mywork/">查看作业</a></td>
         </tr>

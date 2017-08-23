@@ -62,52 +62,61 @@
     <div class="panel-heading">
         <h3 class="panel-title">作业提交</h3>
     </div>
-
-    <div class="panel-body" id="div_submit_none" style="display:none">
-        您还没有获取作业，无法提交
-    </div>
-    <div class="panel-body" id="div_submit" style="display:none">
-      {% if qu.github %}
-        {% if qi.allow_submit %}
-        <label for="basic-url">请输入作业repo名称</label>
-        <div class="input-group" style="max-width: 80%">
-            <span class="input-group-addon" id="basic-addon3">https://github.com/<b>{{qu.github}}</b>/</span>
-            {% if qh.repo %}
-            <input type="text" class="form-control" id="repo_input" aria-describedby="basic-addon3" value="{{qh.repo}}" disabled>
-            <span class="input-group-btn">
-                <button id="btn_repoupdate" class="btn btn-default" type="button">修改</button>
-                <button id="btn_repoinput" class="btn btn-success" type="button" style="display: none">提交作业</button>
-                <a href="https://github.com/{{qu.github}}/{{qh.repo}}" target="_blank" style="margin-left: 10px"><button class="btn btn-info">查看作业</button></a>                
-            </span>
+    {% if qh %}
+    <div class="panel-body" id="div_submit">
+            {% if qu.github %}
+              {% if qi.allow_submit %}
+              <label for="basic-url">请输入作业repo名称</label>
+              <div class="input-group" style="max-width: 550px">
+                  <span class="input-group-addon" id="basic-addon3">https://github.com/<b>{{qu.github}}</b>/</span>
+                  {% if qh.repo %}
+                  <input type="text" class="form-control" id="repo_input" aria-describedby="basic-addon3" value="{{qh.repo}}" disabled>
+                  <span class="input-group-btn">
+                      <button id="btn_repoupdate" class="btn btn-default" type="button">修改</button>
+                      <button id="btn_repoinput" class="btn btn-success" type="button" style="display: none">提交</button>
+                      <a href="https://github.com/{{qu.github}}/{{qh.repo}}" target="_blank" style="margin-left: 10px"><button class="btn btn-info">查看作业</button></a>                
+                  </span>
+                  {% else %}
+                  <input type="text" class="form-control" id="repo_input" aria-describedby="basic-addon3">
+                  <span class="input-group-btn">
+                      <button id="btn_repoinput" class="btn btn-success" type="button" data-loading-text="提交中...">提交作业</button>
+                  </span>
+                  {% endif %}
+              </div>
+              {% else %}
+              <p style="color: red">对不起，老师已关闭提交入口</p>
+              {% endif %}
             {% else %}
-            <input type="text" class="form-control" id="repo_input" aria-describedby="basic-addon3">
-            <span class="input-group-btn">
-                <button id="btn_repoinput" class="btn btn-success" type="button" data-loading-text="提交中...">提交作业</button>
-            </span>
+            <p>您还没有绑定Github，无法提交</p>
             {% endif %}
-
+          </div>
+    {% else %}
+        <div class="panel-body" id="div_submit_none">
+            您还没有获取作业，无法提交，获取后请刷新页面
         </div>
-        {% else %}
-        <p style="color: red">对不起，老师已关闭提交入口</p>
-        {% endif %}
-      {% else %}
-      <p>您还没有绑定Github，无法提交</p>
-      {% endif %}
-    </div>
-</div>
+    {% endif %}
 
+</div>
 
 <div class="panel panel-success" style="max-width: 700px">
     <div class="panel-heading">
         <h3 class="panel-title">作业检测</h3>
-    </div>
+     </div>
     <div class="panel-body">
         {% if qh.repo %}
-        <button class="btn btn-default" type="submit">在线检测</button>
+        <button id="btn-check" type="button" class="btn btn-info">点击检测</button> 
+        <div>
+            <br>
+            <span>检测结果：</span>
+            <span id="check-result">未检测</span>
+            <a href="/home/mywork/">刷新</a>  
+        </div>
         {% else %}
-        <button class="btn btn-default" type="submit" disabled>您未提交作业</button>
+          您还没有提交作业
         {% endif %}
-    </div>
+        
+        
+  </div>
 </div>
 
 {% else %}
@@ -116,17 +125,48 @@
 
 
 <script>
-    {% if qh %}
-        exist = true;
-    {% else %}
-        exist = false;
-    {% endif %}
-    console.log(exist);
-    if(exist){
-        $('#div_submit').css('display', 'block');
+////////////////////////////// 作业检测 ///////////////////////////////////////////
+    check_result = '{{qh.self_check_result}}';
+    console.log(check_result);
+    if(check_result == 0){
+        console.log('未检测');
+    }else if(check_result == 3){
+        $('#btn-check').text('正在检测...');
+        $('#btn-check').attr('disabled', 'True');
+        $('#check-result').html('请稍后刷新查看');
     }else{
-        $('#div_submit_none').css('display', 'block');
+        $('#btn-check').text('重新检测');
+        $('#btn-check').removeAttr('disabled');
+        if(check_result == 1){
+            $('#check-result').html('通过');
+        }else if(check_result == 2){
+            $('#check-result').html('未通过');
+        }else{
+            $('#check-result').html('Error!');
+        }
     }
+
+$('#btn-check').on('click', function(){
+    $('#btn-check').text('正在检测...');
+    $('#btn-check').attr('disabled', 'True');
+    $('#check-result').html('请稍后刷新查看');
+    issue = 1;
+    $.ajax({
+            type: "GET",
+            url: '/api/check',
+            data: {
+                issue: issue,
+            },
+            success: function (data) {
+                if(data == 'SUCCESS'){
+                    console.log('作业检测请求成功');
+                }else{
+                    console.log('作业检测请求失败');
+                }
+            }
+        })
+})
+
 
 download_limit = '{{qh.download_limit}}';
 console.log(download_limit);
@@ -148,6 +188,7 @@ $('#btn-getenv').on('click', function(){
         setTimeout("$('#btn-getenv').removeAttr('disabled');$('#btn-getenv').text('下载实验环境');", '5000');
     }
     window.location.href = '/api/getenv?issue=1';
+    window.location.reload;
 })
 
 

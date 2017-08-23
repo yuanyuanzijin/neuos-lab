@@ -29,7 +29,8 @@ class Homework(models.Model):                                               # id
     download_limit = models.CharField(max_length=10, null=True, blank=True)             # 下载次数
     repo = models.CharField(max_length=10, null=True, blank=True)                       # 提交的repo名称
     submit_time = models.DateTimeField(null=True, blank=True)                           # 提交时间
-    check_result = models.CharField(max_length=10, null=True, blank=True)               # 作业检测结果
+    self_check_result = models.IntegerField(default=0)                      # 0未检测 1通过 2未通过 3检测中 4错误
+    check_result = models.IntegerField(default=0)                      # 0未检测 1通过 2未通过 3检测中 4错误
     create_at = models.DateTimeField(null=True, auto_now_add=True)          # 数据创建时间
     update_at = models.DateTimeField(null=True, auto_now=True)              # 数据更新时间
 
@@ -52,8 +53,3 @@ class Issue(models.Model):                                                      
 
     def __unicode__(self):
         return str(self.id)
-
-class Profile(models.Model):
-    student_id = models.ForeignKey(User)
-    oauth_token = models.CharField(max_length=200)
-    oauth_secret = models.CharField(max_length=200)
