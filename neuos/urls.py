@@ -25,6 +25,7 @@ apipatterns = [
     url(r'^updatename', update_name),
     url(r'^updaterepo', update_repo),
     url(r'getenv', get_environment),
+    url(r'^check_one', check_request),
     # teacher api
     url(r'^(switchissued)', switch),
     url(r'^(switchallowsubmit)', switch),
@@ -32,8 +33,7 @@ apipatterns = [
     url(r'^delstudents', del_students),
     url(r'^addstudent', add_student),
     url(r'^updatedeadline', update_deadline),
-    # both api
-    url(r'^check', check_request),
+    url(r'^check_all', check_request_all)
 ]
 
 urlpatterns = [

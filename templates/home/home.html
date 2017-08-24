@@ -4,91 +4,110 @@
 
 {% block content %}
 
+<!-- 如未绑定Github首页进行提示 -->
 {% if not qu.github %}
-    <div class="alert alert-warning alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <strong>请注意！</strong> 您还没有绑定Github账号，无法上交作业，前往<a href="/home/myinfo" class="alert-link">个人中心</a>绑定。
-    </div>
+<div class="alert alert-warning alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>请注意！</strong> 您还没有绑定Github账号，无法上交作业，前往<a href="/home/myinfo/" class="alert-link">个人中心</a>绑定。
+</div>
 {% endif %}
 
+<!-- 个人信息板块 -->
 <div class="panel panel-info" style="max-width: 500px">
-  <!-- Default panel contents -->
-  <div class="panel-heading">个人信息</div>
-
-  <table class="table table-hover">
-      <thead>
-        <th>学号</th>
-        <th>姓名</th>
-        <th>Github</th>
-      </thead>
-
-      <tr>
-        <td>{{qu.student_id}}</td>
-        <td>
-            {% if qu.name %}
-                {{qu.name}}
-            {% else %}
-                <span class='red'>未填写</span>
-            {% endif %}
-        </td>
-        <td>{% if qu.github %}{{qu.github}}{% else %}<span class='red'>未绑定</span>{% endif %}</td>
-      </tr>
-  </table>
-</div>
-
-
-<div class="panel panel-success" style="max-width: 900px">
-    <!-- Default panel contents -->
-    <div class="panel-heading">作业概况</div>
-
+    <div class="panel-heading">个人信息</div>
     <table class="table table-hover">
         <thead>
-          <th>作业序号</th>
-          <th>提交入口</th>
-          <th>截止日期</th>
-          <th>提交时间</th>
-          <th>是否按时</th>
-          <th>检测结果</th>
-          <th>操作</th>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>Github</th>
         </thead>
-
-        {% for qi in qi_all %}
-        <tr>
-          <td>{{qi.id}}</td>
-          <td>{% if qi.allow_submit %}<span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>{% else %}<span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>{% endif %}</td>
-          <td>{{qi.deadline}}</td>
-          <td>
-            {% if qh.repo %}
-              {{qh.submit_time}}
-            {% else %}
-              <span class="red">未提交</span>
-            {% endif %}
-          </td>
-          <td>
-            {% if qh.submit_time %}
-                {% if qh.submit_time < qi.deadline %}
-                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+        <tbody>
+            <tr>
+                <td>{{qu.student_id}}</td>
+                <td>
+                {% if qu.name %} 
+                    <span>{{qu.name}}</span>
                 {% else %}
-                <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                    <span class='red'>未填写</span> 
                 {% endif %}
-            {% else %}
-            ——
-            {% endif %}
-          </td>
-          <td>
-            {% if qh.self_check_result == 1 %}
-            <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
-            {% elif qh.self_check_result == 2 %}
-            <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
-            {% else %}
-            <span class="gray">未检测</span>
-            {% endif %}
-            
-          </td>
-          <td><a href="/home/mywork/">查看作业</a></td>
-        </tr>
-        {% endfor %}
+                </td>
+                <td>
+                {% if qu.github %}
+                    <span>{{qu.github}}</span>
+                {% else %}
+                    <span class='red'>未绑定</span>
+                {% endif %}
+                </td>
+            </tr>
+        </tbody>
     </table>
-
 </div>
+
+<!-- 作业概况板块 -->
+<div class="panel panel-success" style="max-width: 900px">
+    <div class="panel-heading">作业概况</div>
+    <table class="table table-hover">
+        <thead>
+            <th>作业序号</th>
+            <th>提交入口</th>
+            <th>截止时间</th>
+            <th>提交时间</th>
+            <th>是否按时</th>
+            <th>检测结果</th>
+            <th>操作</th>
+        </thead>
+        <tbody>
+        {% for qi in qi_all %}
+            <tr>
+                <!-- 作业序号 -->
+                <td>{{qi.id}}</td>
+                <!-- 提交入口 -->
+                <td>
+                {% if qi.allow_submit %}
+                    <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                {% else %}
+                    <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                {% endif %}
+                </td>
+                <!-- 截止时间 -->
+                <td>{{qi.deadline}}</td>
+                <!-- 提交时间 -->
+                <td>
+                {% if qh.repo %} {{qh.submit_time}} {% else %}
+                <span class="red">未提交</span> {% endif %}
+                </td>
+                <!-- 是否按时 -->
+                <td>
+                {% if qh.submit_time %} 
+                    {% if qh.submit_time < qi.deadline %} 
+                    <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                    {% else %}
+                    <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span> 
+                    {% endif %}
+                {% else %} 
+                    <span>——</span>
+                {% endif %}
+                </td>
+                <!-- 检测结果 -->
+                <td>
+                {% if qh.self_check_result == 1 %}
+                    <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span> 
+                {% elif qh.self_check_result == 2 %}
+                    <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span> 
+                {% elif qh.self_check_result == 3 %}
+                    <span class="gray">检测中</span> 
+                {% else %}
+                    <span class="gray">未检测</span> 
+                {% endif %}
+                </td>
+                <!-- 操作 -->
+                <td><a href="/home/mywork/">查看作业</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% endblock %}

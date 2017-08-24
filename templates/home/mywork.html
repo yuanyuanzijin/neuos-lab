@@ -6,233 +6,264 @@
 
 {% block content %}
 
+<!-- 导航信息 -->
 <div style="font-size: 16px;">
-        <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline">
-            <option>作业一</option>
-        </select>
-    
-        <span style="margin-left: 20px;">
-            {% if qi.issued %}
-                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
-                <span class="green">已下发</span>
-            {% else %}
-                <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
-                <span class="red">未下发</span>
-            {% endif %}
-        </span>
-    
-        <span style="margin-left: 20px">
-            {% if qi.allow_submit %}
-                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
-                <span class="green">可提交</span>
-            {% else %}
-                <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
-                <span class="red">不可提交</span>
-            {% endif %}
-        </span>
-    
-        <span style="margin-left: 20px">
-            截止时间：
-            {% if qi.deadline %}
-                <b>{{ qi.deadline }}</b>
-            {% else %}
-                <span class='gray'>未设置</span>
-            {% endif %}
-        </span>
-    </div>
-
-{% if qi.issued %}
-<div class="panel panel-info" style="max-width: 700px">
-    <div class="panel-heading">
-        <h3 class="panel-title">作业下载</h3>
-     </div>
-    <div class="panel-body" id="div-getenv">
-        <button id="btn-getenv" class="btn btn-success" type="submit">下载实验环境</button>
-        <span class="gray">剩余次数：
-            {% if qh %}
-            <span id="span-times">{{qh.download_limit}}</span>
-            {% else %}
-            <span id="span-times">3</span>
-            {% endif %}
-        </span>
-  </div>
-</div>
-
-<div class="panel panel-warning" style="max-width: 700px">
-    <div class="panel-heading">
-        <h3 class="panel-title">作业提交</h3>
-    </div>
-    {% if qh %}
-    <div class="panel-body" id="div_submit">
-            {% if qu.github %}
-              {% if qi.allow_submit %}
-              <label for="basic-url">请输入作业repo名称</label>
-              <div class="input-group" style="max-width: 550px">
-                  <span class="input-group-addon" id="basic-addon3">https://github.com/<b>{{qu.github}}</b>/</span>
-                  {% if qh.repo %}
-                  <input type="text" class="form-control" id="repo_input" aria-describedby="basic-addon3" value="{{qh.repo}}" disabled>
-                  <span class="input-group-btn">
-                      <button id="btn_repoupdate" class="btn btn-default" type="button">修改</button>
-                      <button id="btn_repoinput" class="btn btn-success" type="button" style="display: none">提交</button>
-                      <a href="https://github.com/{{qu.github}}/{{qh.repo}}" target="_blank" style="margin-left: 10px"><button class="btn btn-info">查看作业</button></a>                
-                  </span>
-                  {% else %}
-                  <input type="text" class="form-control" id="repo_input" aria-describedby="basic-addon3">
-                  <span class="input-group-btn">
-                      <button id="btn_repoinput" class="btn btn-success" type="button" data-loading-text="提交中...">提交作业</button>
-                  </span>
-                  {% endif %}
-              </div>
-              {% else %}
-              <p style="color: red">对不起，老师已关闭提交入口</p>
-              {% endif %}
-            {% else %}
-            <p>您还没有绑定Github，无法提交</p>
-            {% endif %}
-          </div>
-    {% else %}
-        <div class="panel-body" id="div_submit_none">
-            您还没有获取作业，无法提交，获取后请刷新页面
-        </div>
-    {% endif %}
-
-</div>
-
-<div class="panel panel-success" style="max-width: 700px">
-    <div class="panel-heading">
-        <h3 class="panel-title">作业检测</h3>
-     </div>
-    <div class="panel-body">
-        {% if qh.repo %}
-        <button id="btn-check" type="button" class="btn btn-info">点击检测</button> 
-        <div>
-            <br>
-            <span>检测结果：</span>
-            <span id="check-result">未检测</span>
-            <a href="/home/mywork/">刷新</a>  
-        </div>
+    <!-- 选择作业 -->
+    <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline">
+        <option>作业一</option>
+    </select>
+    <!-- 是否下发 -->
+    <span style="margin-left: 20px;">
+        {% if qi.issued %}
+            <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+            <span class="green">已下发</span> 
         {% else %}
-          您还没有提交作业
+            <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+            <span class="red">未下发</span>
         {% endif %}
-        
-        
-  </div>
+    </span>
+    <!-- 是否允许提交 -->
+    <span style="margin-left: 20px">
+        {% if qi.allow_submit %}
+            <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+            <span class="green">可提交</span> 
+        {% else %}
+            <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+            <span class="red">不可提交</span>
+        {% endif %}
+    </span>
+    <!-- 截止时间 -->
+    <span style="margin-left: 20px">
+        <span>截止时间：</span>    
+        {% if qi.deadline %}
+            <span><b>{{ qi.deadline }}</b></span>
+        {% else %}
+            <span class='gray'>未设置</span>
+        {% endif %}
+    </span>
 </div>
 
+<!-- 作业未下发显示等待下发 -->
+{% if not qi.issued %}
+    <div class="alert alert-warning" role="alert">作业未下发，请等待老师操作</div>
+
+<!-- 作业已下发 -->
 {% else %}
-<div class="alert alert-warning" role="alert">作业未下发，请等待老师操作</div>
+    <!-- 作业下载板块 -->
+    <div class="panel panel-info" style="max-width: 700px">
+        <div class="panel-heading">
+            <h3 class="panel-title">作业下载</h3>
+        </div>
+        <div class="panel-body" id="div-getenv">
+            <button id="btn-getenv" class="btn btn-success" type="submit">下载实验环境</button>
+            <span class="gray">
+                <span>剩余次数：</span>
+                {% if qh %}
+                    <span id="span-times">{{qh.download_limit}}</span>
+                {% else %}
+                    <span id="span-times">3</span>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+    <!-- 作业提交板块 -->
+    <div class="panel panel-warning" style="max-width: 700px">
+        <div class="panel-heading">
+            <h3 class="panel-title">作业提交</h3>
+        </div>
+        <!-- 如果有Homework数据（下载过作业） -->
+        {% if qh %}
+            <div class="panel-body">
+                <!-- 如果绑定过Github -->
+                {% if qu.github %}
+                    <!-- 如果允许提交 -->
+                    {% if qi.allow_submit %}
+                        <label for="basic-url">请输入作业repo名称</label>
+                        <div class="input-group" style="max-width: 550px">
+                            <span class="input-group-addon" id="basic-addon3">https://github.com/<b>{{qu.github}}</b>/</span>
+                            <!-- 如果提交过作业 -->
+                            {% if qh.repo %}
+                                <input type="text" class="form-control" id="repo-input" aria-describedby="basic-addon3" value="{{qh.repo}}" disabled>
+                                <span class="input-group-btn">
+                                    <button id="btn-repo-update" class="btn btn-default" type="button">修改</button>
+                                    <button id="btn-repo-input" class="btn btn-success" type="button" style="display: none">提交</button>
+                                    <a href="https://github.com/{{qu.github}}/{{qh.repo}}" target="_blank" style="margin-left: 10px"><button class="btn btn-info">查看作业</button></a>                
+                                </span>
+                            <!-- 如果没提交过作业 -->
+                            {% else %}
+                                <input type="text" class="form-control" id="repo-input" aria-describedby="basic-addon3">
+                                <span class="input-group-btn">
+                                    <button id="btn-repo-input" class="btn btn-success" type="button" data-loading-text="提交中...">提交作业</button>
+                                </span>
+                            {% endif %}
+                        </div>
+
+                    <!-- 如果不允许提交 -->
+                    {% else %}
+                        <p style="color: red">对不起，老师已关闭提交入口</p>
+                    {% endif %}
+
+                <!-- 如果没绑定过Github -->
+                {% else %}
+                    <p>您还没有绑定Github，无法提交</p>
+                {% endif %}
+            </div>
+
+        <!-- 如果没下载过作业 -->
+        {% else %}
+            <div class="panel-body">
+                您还没有获取作业，无法提交，获取后请刷新页面
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- 作业检测板块 -->
+    <div class="panel panel-success" style="max-width: 700px">
+        <div class="panel-heading">
+            <h3 class="panel-title">作业检测</h3>
+        </div>
+        <div class="panel-body">
+            {% if qh.repo %}
+                <button id="btn-check" type="button" class="btn btn-info">点击检测</button> 
+                <div style="margin-top: 20px;">
+                    <span>检测结果：</span>
+                    <span id="check-result" class="gray">未检测</span>
+                    <a href="/home/mywork/" style="margin-left: 10px">刷新</a>  
+                </div>
+            {% else %}
+                <span>您还没有提交作业</span>    
+            {% endif %}
+        </div>
+    </div>
+
 {% endif %}
 
 
 <script>
-////////////////////////////// 作业检测 ///////////////////////////////////////////
-    check_result = '{{qh.self_check_result}}';
-    console.log(check_result);
-    if(check_result == 0){
-        console.log('未检测');
-    }else if(check_result == 3){
-        $('#btn-check').text('正在检测...');
-        $('#btn-check').attr('disabled', 'True');
-        $('#check-result').html('请稍后刷新查看');
-    }else{
-        $('#btn-check').text('重新检测');
-        $('#btn-check').removeAttr('disabled');
-        if(check_result == 1){
-            $('#check-result').html('通过');
-        }else if(check_result == 2){
-            $('#check-result').html('未通过');
-        }else{
-            $('#check-result').html('Error!');
-        }
-    }
 
-$('#btn-check').on('click', function(){
-    $('#btn-check').text('正在检测...');
-    $('#btn-check').attr('disabled', 'True');
-    $('#check-result').html('请稍后刷新查看');
-    issue = 1;
-    $.ajax({
-            type: "GET",
-            url: '/api/check',
-            data: {
-                issue: issue,
-            },
-            success: function (data) {
-                if(data == 'SUCCESS'){
-                    console.log('作业检测请求成功');
-                }else{
-                    console.log('作业检测请求失败');
-                }
-            }
-        })
-})
+///////////////////////////////// 作业下载 ////////////////////////////////////////////////////
 
-
-download_limit = '{{qh.download_limit}}';
-console.log(download_limit);
-if(download_limit && download_limit <= 0){
-    $('#btn-getenv').attr('disabled', 'true');
-    $('#span-times').html('0，如有问题请联系老师');
-}
-
-$('#btn-getenv').on('click', function(){
-    $('#btn-getenv').attr('disabled', 'true');
-    $('#btn-getenv').text('实验生成中...');
-
-    $('#span-times').html($('#span-times').html()-1);
-    if($('#span-times').html() == 0){
+    download_limit = '{{qh.download_limit}}';
+    // 如果页面初始化时下载次数用完
+    if(download_limit && download_limit <= 0){
         $('#btn-getenv').attr('disabled', 'true');
-        $('#span-times').html('已达上限，如有问题请联系老师');
-        setTimeout("$('#btn-getenv').text('下载实验环境');", '5000');
+        $('#span-times').html('0，如有问题请联系老师');
+    // 如果页面初始化时还有下载次数
     }else{
-        setTimeout("$('#btn-getenv').removeAttr('disabled');$('#btn-getenv').text('下载实验环境');", '5000');
-    }
-    window.location.href = '/api/getenv?issue=1';
-    window.location.reload;
-})
+        $('#btn-getenv').on('click', function(){
+        $('#btn-getenv').attr('disabled', 'true');
+        $('#btn-getenv').text('实验生成中...');
 
-
-    $('#btn_repoinput').on('click', function(){
-        issue = 1;
-        repo = $('#repo_input').val();
-        if(!repo){
-            return;
+        $('#span-times').html($('#span-times').html()-1);
+        // 如果点击下载后次数用完
+        if($('#span-times').html() == 0){
+            $('#btn-getenv').attr('disabled', 'true');
+            $('#span-times').html('已达上限，如有问题请联系老师');
+            setTimeout("$('#btn-getenv').text('下载实验环境');", '5000');
+        // 如果点击下载后还有下载次数
+        }else{
+            setTimeout("$('#btn-getenv').removeAttr('disabled');$('#btn-getenv').text('下载实验环境');", '5000');
         }
-        var $btn = $(this).button('loading');
-        
+        window.location.href = '/api/getenv?issue=1';
+        })
+    }
+
+///////////////////////////////// 作业提交 ////////////////////////////////////////////
+
+    // 点击作业提交按钮
+    $('#btn-repo-input').on('click', function(){
+        issue = 1;
+        repo = $('#repo-input').val();
+        // 如果输入为空则返回
+        if(!repo){return}
+
+        var $btn = $(this).button('提交中...');
+        // 提交作业
         $.ajax({
             type: "GET",
             url: '/api/updaterepo',
             data: {
                 issue: issue,
-                repo: repo,
+                repo: repo
             },
             success: function (data) {
+                // 如果返回成功
                 if(data == 'SUCCESS'){
+                    // 弹出提交成功模态框
                     $('#repoback').modal({
                         backdrop: 'static',
                         keyboard: false,
                         show: true
                     })
-
-                    $('#btn_reload').on('click', function(){
+                    // 确认后刷新页面
+                    $('#btn-reload').on('click', function(){
                         window.location.reload();
                     })
-
+                // 如果返回失败
                 }else{
                     console.log('修改失败');
                 }
             }
         })
     })
-
-    $('#btn_repoupdate').on('click', function(){
-        $('#repo_input').removeAttr('disabled');
-        $('#btn_repoupdate').css('display', 'none')
-        $('#btn_repoinput').css('display', 'inline-block');
+    // 点击修改按钮
+    $('#btn-repo-update').on('click', function(){
+        $('#repo-input').removeAttr('disabled');
+        $('#btn-repo-update').css('display', 'none')
+        $('#btn-repo-input').css('display', 'inline-block');
     })
         
-        </script>
+////////////////////////////// 作业检测 ///////////////////////////////////////////
+
+    check_result = '{{qh.self_check_result}}';
+    // 如果没检测过
+    if(check_result == 0){
+        console.log('未检测');
+    // 如果正在检测
+    }else if(check_result == 3){
+        $('#btn-check').text('正在检测...');
+        $('#btn-check').attr('disabled', 'True');
+        $('#check-result').html('请稍后刷新查看');
+    // 如果检测过
+    }else{
+        $('#btn-check').text('重新检测');
+        $('#btn-check').removeAttr('disabled');
+        // 如果检测通过
+        if(check_result == 1){
+            $('#check-result').html('通过');
+        // 如果检测未通过
+        }else if(check_result == 2){
+            $('#check-result').html('未通过');
+        // 如果检测过程出现错误
+        }else{
+            $('#check-result').html('Error!');
+        }
+    }
+
+    // 点击检测按钮
+    $('#btn-check').on('click', function () {
+        $('#btn-check').text('正在检测...');
+        $('#btn-check').attr('disabled', 'True');
+        $('#check-result').html('请稍后刷新查看');
+        issue = 1;
+        $.ajax({
+            type: "GET",
+            url: '/api/check_one',
+            data: {
+                issue: issue
+            },
+            success: function (data) {
+                if (data == 'SUCCESS') {
+                    console.log('作业检测请求成功');
+                } else {
+                    console.log('作业检测请求失败');
+                }
+            }
+        })
+    })
+
+</script>
 
 <!-- repo提交模态框 -->
     <div id="repoback" class="modal fade" tabindex="-1" role="dialog">
@@ -242,13 +273,13 @@ $('#btn-getenv').on('click', function(){
                 <h4 class="modal-title">提示</h4>
             </div>
             <div class="modal-body">
-              <p>作业提交成功</p>
+              <p>作业提交成功！</p>
             </div>
             <div class="modal-footer">
-              <button id="btn_reload" type="button" class="btn btn-primary">确定</button>
+              <button id="btn-reload" type="button" class="btn btn-primary">确定</button>
             </div>
-          </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+          </div>
+        </div>
+    </div>
 
 {% endblock %}

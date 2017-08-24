@@ -125,7 +125,7 @@ def teacher(request):
     qh_all_submit = qh_all.filter(repo__isnull=False)                                  # 作业1所有提交
     submit_num = len(qh_all_submit)                                             # 作业1所有提交数
 
-    qh_all_pass = qh_all.filter(check_result=True)                                     # 作业1所有通过
+    qh_all_pass = qh_all.filter(check_result=1)                                     # 作业1所有通过
     pass_num = len(qh_all_pass)                                                 # 作业1所有通过数
 
     qs_all = User.objects.filter(user_type=1)                                   # 所有学生

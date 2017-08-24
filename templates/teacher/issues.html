@@ -4,46 +4,49 @@
 
 {% block content %}
 
+<!-- 作业概况 -->
 <div style="font-size: 16px;">
-        <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline">
-            <option>作业一</option>
-        </select>
+    <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline">
+        <option>作业一</option>
+    </select>
     
-        <span style="margin-left: 20px;">
-            {% if qi.issued %}
-                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
-                <span class="green">已下发</span>
-            {% else %}
-                <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
-                <span class="red">未下发</span>
-            {% endif %}
-        </span>
+    <span style="margin-left: 20px;">
+        {% if qi.issued %}
+            <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+            <span class="green">已下发</span>
+        {% else %}
+            <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+            <span class="red">未下发</span>
+        {% endif %}
+    </span>
     
-        <span style="margin-left: 20px">
-            {% if qi.allow_submit %}
-                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
-                <span class="green">可提交</span>
-            {% else %}
-                <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
-                <span class="red">不可提交</span>
-            {% endif %}
-        </span>
+    <span style="margin-left: 20px">
+        {% if qi.allow_submit %}
+            <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+            <span class="green">可提交</span>
+        {% else %}
+            <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+            <span class="red">不可提交</span>
+        {% endif %}
+    </span>
     
-        <span style="margin-left: 20px">
-            截止时间：
-            {% if qi.deadline %}
-                <b>{{ qi.deadline }}</b>
-            {% else %}
-                未设置
-            {% endif %}
-        </span>
-    </div>
+    <span style="margin-left: 20px">
+        截止时间：
+        {% if qi.deadline %}
+            <b>{{ qi.deadline }}</b>
+        {% else %}
+            未设置
+        {% endif %}
+    </span>
+</div>
 
+<!-- 作业操作 -->
 <div class="panel panel-success" style="max-width: 600px">
     <div class="panel-heading">
         <h3 class="panel-title">作业操作</h3>
     </div>
     <div class="panel-body">
+        <!-- 是否下发 -->
         {% if qi.issued %}
             <span>是否下发：<span class="green">已下发</span></span>
             <button id="switch_issued" action="close" class="btn btn-default" type="submit">停止</button>
@@ -52,7 +55,7 @@
             <button id="switch_issued" action="open" class="btn btn-default" type="submit">下发作业</button>
         {% endif %}
         <hr>
-
+        <!-- 是否允许提交 -->
         {% if qi.allow_submit %}
             <span>提交入口：<span class="green">已开启</span></span>
             <button id="switch_allow_submit" action="close" class="btn btn-default" type="submit">关闭</button>
@@ -65,7 +68,7 @@
             {% endif %}
         {% endif %}
         <hr>
-
+        <!-- 是否设置截止时间 -->
         {% if qi.deadline %}
             <span>截止时间：{{qi.deadline}}</span>
             <button class="btn btn-default" data-toggle="modal" data-target="#deadlineModal">修改</button>
@@ -73,16 +76,15 @@
             <span>截止时间：<span class="red">未设置</span></span>
             <button class="btn btn-default" data-toggle="modal" data-target="#deadlineModal">设置</button>
         {% endif %}
-        
     </div>
 </div>
 
+<!-- 已提交作业模块 -->
 <div class="panel panel-success" style="max-width: 900px">
-    <!-- Default panel contents -->
     <div class="panel-heading">
-        <h3 class="panel-title">已提交作业</h3>
+        <h3 class="panel-title" style="display: inline">已提交作业</h3>
+        <button class="btn btn-info" style="float: right;margin-top:-6px;margin-right:10px" data-toggle="modal" data-target="#checkModal">验收全部</button>        
     </div>
-
     <table class="table table-hover">
         <thead>
           <th>学号</th>
@@ -92,184 +94,239 @@
           <th>验收结果</th>
           <th>操作</th>
         </thead>
-
+        <tbody>
         {% for qh in qh_all %}
             {% if qh.repo %}
             <tr>
-            <td>{{qh.student_id}}</td>
-            <td>{{qh.student_id.name}}</td>
-            <td>{{qh.submit_time}}</td>
-            <td>
-                {% if qh.repo %}
-                    {% if qh.submit_time < qi.deadline %}
-                        <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                <!-- 学号 -->
+                <td>{{qh.student_id}}</td>
+                <!-- 姓名 -->
+                <td>{{qh.student_id.name}}</td>
+                <!-- 提交时间 -->
+                <td>{{qh.submit_time}}</td>
+                <!-- 是否按时 -->
+                <td>
+                    {% if qh.repo %}
+                        {% if qh.submit_time < qi.deadline %}
+                            <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                        {% else %}
+                            <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                        {% endif %}
                     {% else %}
-                        <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                        <span>——</span>
                     {% endif %}
-                {% else %}
-                ——
-                {% endif %}
-            </td>
-            <td>
-                {% if qh.check_result %}
-                    {% ifequal qh.check_result 1 %}
-                    <span class="green">通过</span>
+                </td>
+                <!-- 验收结果 -->
+                <td>
+                    {% if qh.check_result %}
+                        {% if qh.check_result == 1 %}
+                            <span class="green">通过</span>
+                        {% elif qh.check_result == 2 %}
+                            <span class="red">未通过</span>
+                        {% elif qh.check_result == 3 %}
+                            <span class="gray">检测中</span> 
+                        {% else %}
+                            <span class="red">系统错误</span>   
+                        {% endif %}
                     {% else %}
-                    <span class="red">未通过</span>
-                    {% endifequal %}
-                {% else %}
-                <span class="gray">未验收</span>
-                {% endif %}
-            </td>
-            <td><a href="https://github.com/{{qh.student_id.github}}/{{qh.repo}}" target="_blank">查看作业</a><a href="#" style="margin-left:20px">验收</a></td>
+                    <span class="gray">未验收</span>
+                    {% endif %}
+                </td>
+                <!-- 操作 -->
+                <td><a href="https://github.com/{{qh.student_id.github}}/{{qh.repo}}" target="_blank">查看作业</a></td>
             </tr>
             {% endif %}
         {% endfor %}
+        </tbody>
     </table>
 </div>
 
+<!-- 未提交模块 -->
 <div class="panel panel-danger" style="max-width: 600px">
-        <!-- Default panel contents -->
-        <div class="panel-heading">
-            <h3 class="panel-title">未提交名单</h3>
-        </div>
-    
-        <table class="table table-hover">
-            <thead>
-              <th>学号</th>
-              <th>姓名</th>
-              <th>作业是否下载</th>
-              <th>下载剩余次数</th>
-            </thead>
-            <tbody>
-                {% for qs in qs_not_all %}
-                <tr>
-                    <td>{{qs.student_id}}</td>
-                    <td>
-                        {% if qs.name %}
-                            {{qs.name}}
-                        {% else %}
-                            ——
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if qs.homework %}
-                        <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
-                        {% else %}
-                        <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
-                        {% endif %}
-                    </td>
-                    <td>
-                    {% if qs.homework.download_limit %}
-                      {{qs.homework.download_limit}}
-                    {% else %}
-                      3
-                    {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="panel-heading">
+        <h3 class="panel-title">未提交名单</h3>
     </div>
+    
+    <table class="table table-hover">
+        <thead>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>是否绑定Github</th>
+            <th>作业是否下载</th>
+            <th>下载剩余次数</th>
+        </thead>
+        <tbody>
+        {% for qs in qs_not_all %}
+            <tr>
+                <td>{{qs.student_id}}</td>
+                <td>
+                    {% if qs.name %}
+                        <span>{{qs.name}}</span>
+                    {% else %}
+                       <span>——</span> 
+                    {% endif %}
+                </td>
+                <td>
+                    {% if qs.github %}
+                        <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>                        
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>                        
+                    {% endif %}
+                    
+                </td>
+                <td>
+                    {% if qs.homework %}
+                        <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if qs.homework.download_limit %}
+                        <span>{{qs.homework.download_limit}}</span>
+                    {% else %}
+                        <span>3</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 
+<!-- 设置截止日期模态框 -->
 <div class="modal fade" id="deadlineModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">截止日期设置</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">作业提交截止时间</label>
-                        <div id="datetime-choose">
-                            <input id="choose-date" type="date" class="form-control date" value="2017-07-31">
-                            <input id="choose-time" type="time" class="form-control time" value="20:00">
-                        </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">截止日期设置</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">作业提交截止时间</label>
+                    <div id="datetime-choose">
+                        <input id="choose-date" type="date" class="form-control date" value="2017-07-31">
+                        <input id="choose-time" type="time" class="form-control time" value="20:00">
                     </div>
-                    <p class="help-block">截止时间过后学生仍可提交作业，但会被标注为晚交</p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button id="deadline-submit" type="submit" class="btn btn-primary">提交</button>
-                </div>
+                <p class="help-block">截止时间过后学生仍可提交作业，但会被标注为晚交</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="deadline-submit" type="submit" class="btn btn-primary">提交</button>
             </div>
         </div>
     </div>
+</div>
+    
+<!-- 批量验收模态框 -->
+<div class="modal fade" id="checkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">批量验收</h4>
+            </div>
+            <div class="modal-body">
+                <p class="help-block">确认要批量验收所有已提交作业吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="check-all-submit" type="submit" class="btn btn-primary">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
-$('#switch_issued').on('click', function(){
-    issue = 1;
-    action = $('#switch_issued')[0].getAttribute('action');
+    
+    // 展现当前截止时间
+    var getdeadline = '{{qi.deadline}}';
+    var re = getdeadline.match(/\d+/g);
+    if(re[1].length == 1){
+        re[1] = '0'+re[1];
+    }
+    if(re[2].length == 1){
+        re[2] = '0'+re[2];
+    }
+    var current_date = re[0]+'-'+re[1]+'-'+re[2];
+    var current_time = re[3]+':'+re[4];
+    console.log(current_date, current_time);
+    $('#choose-date').val(current_date);
+    $('#choose-time').val(current_time);
 
-    $.ajax({
-        type: "GET",
-        url: '/api/switchissued',
-        data: {
-            issue: issue,
-            action: action,
-        },
-        success: function (data) {
-            if(data == 'SUCCESS'){
-                window.location.reload();
-            }else{
-                console.log(data);
+    // 开关下发按钮
+    $('#switch_issued').on('click', function(){
+        issue = 1;
+        action = $('#switch_issued')[0].getAttribute('action');
+        $.ajax({
+            type: "GET",
+            url: '/api/switchissued',
+            data: {
+                issue: issue,
+                action: action,
+            },
+            success: function (data) {
+                if(data == 'SUCCESS'){
+                    window.location.reload();
+                }else{
+                    console.log(data);
+                }
             }
-        }
+        })
     })
-})
-
-var getdeadline = '{{qi.deadline}}';
-var re = getdeadline.match(/\d+/g);
-if(re[1].length == 1){
-    re[1] = '0'+re[1];
-}
-if(re[2].length == 1){
-    re[2] = '0'+re[2];
-}
-var current_date = re[0]+'-'+re[1]+'-'+re[2];
-var current_time = re[3]+':'+re[4];
-console.log(current_date, current_time);
-$('#choose-date').val(current_date);
-$('#choose-time').val(current_time);
-
-$('#switch_allow_submit').on('click', function(){
-    issue = 1;
-    action = $('#switch_allow_submit')[0].getAttribute('action');
-
-    $.ajax({
-        type: "GET",
-        url: '/api/switchallowsubmit',
-        data: {
-            issue: issue,
-            action: action,
-        },
-        success: function (data) {
-            if(data == 'SUCCESS'){
-                window.location.reload();
-            }else{
-                console.log(data);
+    
+    // 开关允许提交按钮
+    $('#switch_allow_submit').on('click', function(){
+        issue = 1;
+        action = $('#switch_allow_submit')[0].getAttribute('action');
+    
+        $.ajax({
+            type: "GET",
+            url: '/api/switchallowsubmit',
+            data: {
+                issue: issue,
+                action: action,
+            },
+            success: function (data) {
+                if(data == 'SUCCESS'){
+                    window.location.reload();
+                }else{
+                    console.log(data);
+                }
             }
-        }
+        })
     })
-})
-
-$('#deadline-submit').on('click', function(){
-    var issue = 1;
-    var date = $('#choose-date').val();
-    var time = $('#choose-time').val();
-    var deadline = date+('%20'+time);
-
-    $.ajax({
-        type: 'GET',
-        url: '/api/updatedeadline?issue='+issue+'&deadline='+deadline,
-        success: function(data){
-            console.log(data);
-            window.location.reload();
-        }
+        
+    // 提交新截止时间
+    $('#deadline-submit').on('click', function(){
+        var issue = 1;
+        var date = $('#choose-date').val();
+        var time = $('#choose-time').val();
+        var deadline = date+('%20'+time);
+        $.ajax({
+            type: 'GET',
+            url: '/api/updatedeadline?issue='+issue+'&deadline='+deadline,
+            success: function(data){
+                console.log(data);
+                window.location.reload();
+            }
+        })
     })
-})
+        
+    // 批量验收按钮
+    $('#check-all-submit').on('click', function(){
+        issue = 1;
+        $.ajax({
+            type: 'GET',
+            url: '/api/check_all?issue='+issue,
+            success: function(data){
+                window.location.reload();
+            }
+        })
+    })
 </script>
 
 {% endblock %}

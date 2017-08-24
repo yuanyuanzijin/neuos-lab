@@ -5,19 +5,19 @@
 
 <head>
     <meta charset="UTF-8">
+    <!-- 如果没有教师权限 -->
     {% if not permission %}
-    <title>我的实验台 - NEUOS</title>
+        <title>我的实验台 - NEUOS</title>
+    <!-- 如果有教师权限 -->
     {% else %}
-    <title>教师管理后台 - NEUOS</title>
+        <title>教师管理后台 - NEUOS</title>
     {% endif %}
 
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/mycookies.js' %}"></script>  
-    
-
+    <script src="{% static 'js/mycookies.js' %}"></script>  
 </head>
 
 <body>
@@ -37,12 +37,12 @@
         </div>
     </div>
 
-    {% include 'base/footer.html' %}
+    <!-- {% include 'base/footer.html' %} -->
 </body>
 
 <script>
     win_height = $(window).height();
-    $('#main').css('height', win_height-85);
+    $('#main').css('height', win_height-50);
     console.log(win_height);
 </script>
 </html>

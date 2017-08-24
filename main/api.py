@@ -237,9 +237,63 @@ def update_deadline(request):
     return HttpResponse('SUCCESS')
 
 
-######################### 老师学生共用 #####################################
-# 作业检测
+######################### 作业检测 #####################################
+# 学生作业检测
 def check_request(request):
+    # 如果未登录则跳转到实验台
+    if not request.user.is_authenticated():
+        return HttpResponse('not login')
+
+    user = request.user.username
+    qu = User.objects.get(student_id=user)
+    user_type = qu.user_type
+    # 是老师返回
+    if user_type == 2:
+        return HttpResponse("It is student's function")
+    
+    issue = request.GET['issue']
+    # 检查是否绑定Github
+    if qu.github:
+        github = qu.github
+    else:
+        return HttpResponse('Have not bind Github.')
+    # 检查是否提交作业
+    if qu.homework.repo:
+        repo = qu.homework.repo
+    else:
+        return HttpResponse('Have not submit homework.')
+
+    homework_id = qu.homework.id
+    Homework.objects.filter(id=homework_id).update(self_check_result=3)
+    return HttpResponse('SUCCESS')
+
+# 老师作业检测
+def check_request_all(request):
+    # 如果未登录则跳转到实验台
+    if not request.user.is_authenticated():
+        return HttpResponse('not login')
+
+    user = request.user.username
+    qu = User.objects.get(student_id=user)
+    user_type = qu.user_type
+    issue = request.GET['issue']
+    time = timezone.now()
+    # 是学生返回
+    if user_type == 1:
+        return HttpResponse("It is teacher's function")
+    
+    qh_all = Homework.objects.filter(issue_id=issue)
+    qh_all_num = len(qh_all)
+    qh_check_num = 0
+    for qh in qh_all:
+        # 检查是否提交作业
+        if qh.repo:
+            Homework.objects.filter(id=qh.id).update(check_result=3)
+            qh_check_num += 1
+    Issue.objects.filter(id=issue).update(check_time=time)
+    return HttpResponse('SUCCESS'+str(qh_all_num)+str(qh_check_num))
+
+def check_start(request):
     # 如果未登录则跳转到实验台
     if not request.user.is_authenticated():
         return HttpResponse('not login')
@@ -271,6 +325,6 @@ def check_request(request):
     # 发送请求给检测后台
 
 
-    Homework.objects.filter(id=homework_id).update(self_check_result=3)
 
+    Homework.objects.filter(id=homework_id).update(self_check_result=3)
     return HttpResponse('SUCCESS')

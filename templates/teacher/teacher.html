@@ -5,70 +5,77 @@
 {% block content %}
 
 <div class="panel panel-success" style="max-width: 900px">
-    <!-- Default panel contents -->
     <div class="panel-heading">
         <h3 class="panel-title">作业通览</h3>
     </div>
-
     <table class="table table-hover">
         <thead>
-          <th>作业序号</th>
-          <th>是否下发</th>
-          <th>提交入口</th>
-          <th>截止日期</th>
-          <th>已下载</th>
-          <th>已提交</th>
-          <th>验收通过</th>
-          <th>操作</th>
+            <th>作业序号</th>
+            <th>是否下发</th>
+            <th>提交入口</th>
+            <th>截止时间</th>
+            <th>已下载</th>
+            <th>已提交</th>
+            <th>验收通过</th>
+            <th>操作</th>
         </thead>
-
+        <tbody>
         {% for qi in qi_all %}
-        <tr>
-          <td>{{qi.id}}</td>
-          <td>
-              {% if qi.issued %}
-              <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
-              {% else %}
-              <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
-              {% endif %}
-          </td>
-          <td>
-              {% if qi.allow_submit %}
-              <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
-              {% else %}
-              <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
-              {% endif %}
-            </td>
-          <td>{{qi.deadline}}</td>
-          <td>{{download_num}}</td>
-          <td>{{submit_num}}</td>
-          <td>{{pass_num}}</td>
-          <td><a href="/teacher/issues/">管理</a></td>
-        </tr>
+            <tr>
+                <!-- 作业序号 -->
+                <td>{{qi.id}}</td>
+                <!-- 是否下发下发 -->
+                <td>
+                    {% if qi.issued %}
+                        <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                    {% endif %}
+                </td>
+                <!-- 提交入口 -->
+                <td>
+                    {% if qi.allow_submit %}
+                        <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                    {% endif %}
+                </td>
+                <!-- 截止时间 -->
+                <td>{{qi.deadline}}</td>
+                <!-- 已下载 -->
+                <td>{{download_num}}</td>
+                <!-- 已提交 -->
+                <td>{{submit_num}}</td>
+                <!-- 验收通过 -->
+                <td>{{pass_num}}</td>
+                <!-- 管理 -->
+                <td><a href="/teacher/issues/">管理</a></td>
+            </tr>
         {% endfor %}
-    </table>
+        </tbody>
+    </table>    
 </div>
 
 <div class="panel panel-success" style="max-width: 500px">
-    <!-- Default panel contents -->
     <div class="panel-heading">
         <h3 class="panel-title">学生通览</h3>
     </div>
-
     <table class="table table-hover">
         <thead>
-          <th>学生总数</th>
-          <th>Github绑定人数</th>
-          <th>操作</th>
+            <th>学生总数</th>
+            <th>Github绑定人数</th>
+            <th>操作</th>
         </thead>
-
+        <tbody>
         {% for qi in qi_all %}
-        <tr>
-          <td>{{student_num}}</td>
-          <td>{{github_num}}</td>
-          <td><a href="/teacher/students/">管理</a></td>
-        </tr>
+            <tr>
+            <td>{{student_num}}</td>
+            <td>{{github_num}}</td>
+            <td><a href="/teacher/students/">管理</a></td>
+            </tr>
         {% endfor %}
+        </tbody>
     </table>
 </div>
+
 {% endblock %}

@@ -4,6 +4,7 @@
 
 {% block content %}
 
+<!-- 学生导入模块 -->
 <div class="panel panel-success" style="max-width: 500px">
     <div class="panel-heading">
         <h3 class="panel-title">学生导入</h3>
@@ -14,12 +15,11 @@
     </div>
 </div>
 
+<!-- 所有学生模块 -->
 <div class="panel panel-success" style="max-width: 700px">
-    <!-- Default panel contents -->
     <div class="panel-heading">
         <h3 class="panel-title">所有学生（{{qs_all_num}}人）</h3>
     </div>
-
     <table class="table table-hover">
         <thead>
           <th>学号</th>
@@ -27,19 +27,20 @@
           <th>Github</th>
           <th>操作</th>
         </thead>
-
-        {% for qs in qs_all %}
-        <tr>
-          <td>{{qs.student_id}}</td>
-          <td>{% if qs.name %}{{qs.name}}{% else %}——{% endif %}</td>
-          <td>{% if qs.github %}<a href="http://github.com/{{qs.github}}" target="_blank">{{qs.github}}</a>{% else %}——{% endif %}</td>
-          <td><a class="del_btn">删除</a></td>
-        </tr>
-        {% endfor %}
+        <tbody>
+            {% for qs in qs_all %}
+            <tr>
+            <td>{{qs.student_id}}</td>
+            <td>{% if qs.name %}{{qs.name}}{% else %}——{% endif %}</td>
+            <td>{% if qs.github %}<a href="http://github.com/{{qs.github}}" target="_blank">{{qs.github}}</a>{% else %}——{% endif %}</td>
+            <td><a class="del_btn">删除</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </div>
 
-<!-- Modal -->
+<!-- 导入学生模态框 -->
 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -48,8 +49,7 @@
                 <h4 class="modal-title" id="myModalLabel">文件导入</h4>
             </div>
             <div class="modal-body">
-                <input id="upload_file" type="file" name="myfile" onchange="Javascript:validate_img(this);" style="width:200px; margin-bottom:20px;"
-                />
+                <input id="upload_file" type="file" name="myfile" onchange="Javascript:validate_img(this);" style="width:200px; margin-bottom:20px;" />
                 <p class="help-block">支持文件格式：xlsx或xls</p>
                 <p class="help-block">第一列为学号，第二列为姓名（可空），重复学生自动去重</p>
             </div>
@@ -61,6 +61,7 @@
     </div>
 </div>
 
+<!-- 手动添加模态框 -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -87,63 +88,63 @@
     </div>
 </div>
 
+
 <script>
-
-$("#upload_file_btn").on("click", function(){
-    var formData = new FormData();
-    formData.append('myfile', $('#upload_file')[0].files[0]);
-    $.ajax({
-        url: "/api/uploadfile",
-        type: 'POST',
-        cache: false,
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType:"json",
-        complete : function(back) {
-            if(back.responseText == 'SUCCESS'){
-                window.location.reload();
-            }
-        }
-    })
-})
-
-
-//限制上传文件的类型和大小
-function validate_img(ele){
-    var file = ele.value;
-    if(!/.(xlsx|xls)$/.test(file)){
-        alert("文件类型必须是xlsx或xls格式");
-        $('#upload_file')[0].files[0] = '';
-        return false;
-    }
-}
-
-$('.del_btn').on('click', function(){
-    del_id = $(this).parent().prevAll()[2].innerText;
-    if(window.confirm('确认要删除学生'+del_id+'吗？')){
+    // 文件上传
+    $("#upload_file_btn").on("click", function(){
+        var formData = new FormData();
+        formData.append('myfile', $('#upload_file')[0].files[0]);
         $.ajax({
-            url: "/api/delstudents",
-            type: 'GET',
-            data: {
-                studentid: del_id
-            },
-            success : function(back) {
-                if(back == 'SUCCESS'){
+            url: "/api/uploadfile",
+            type: 'POST',
+            cache: false,
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType:"json",
+            complete : function(back) {
+                if(back.responseText == 'SUCCESS'){
                     window.location.reload();
                 }
             }
         })
-    }else{
-        return false
-    }
-})
+    })
 
+    //限制上传文件的类型和大小
+    function validate_img(ele){
+        var file = ele.value;
+        if(!/.(xlsx|xls)$/.test(file)){
+            alert("文件类型必须是xlsx或xls格式");
+            $('#upload_file')[0].files[0] = '';
+            return false;
+        }
+    }
+
+    // 删除学生
+    $('.del_btn').on('click', function(){
+        del_id = $(this).parent().prevAll()[2].innerText;
+        if(window.confirm('确认要删除学生'+del_id+'吗？')){
+            $.ajax({
+                url: "/api/delstudents",
+                type: 'GET',
+                data: {
+                    studentid: del_id
+                },
+                success : function(back) {
+                    if(back == 'SUCCESS'){
+                        window.location.reload();
+                    }
+                }
+            })
+        }else{
+            return false;
+        }
+    })
+
+    // 添加学生确认
     $('#add_submit_btn').on('click', function () {
         add_id = $('#input_id').val();
         add_name = $('#input_name').val();
-        console.log(add_id)
-
         $.ajax({
             url: "/api/addstudent",
             type: 'GET',
