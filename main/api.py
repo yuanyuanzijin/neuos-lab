@@ -34,12 +34,19 @@ def update_repo(request):
     issue = request.GET['issue']
     user = request.user.username
     time = timezone.now()
-    homework = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
-    if homework:
-        homework.update(repo=repo, submit_time=time)
+    qh = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
+    qi = Issue.objects.filter(id=issue)
+    if not qi:
+        return HttpResponse('Issue is not issued.')
+    if not qh:
+        return HttpResponse('Have not get the homework.')
+    
+    if qi[0].allow_submit:
+        qh.update(repo=repo, submit_time=time)
         return HttpResponse('SUCCESS')
     else:
-        return HttpResponse('ERROR')
+        return HttpResponse('Is not allowed to submit.')
+        
 
 # 下载实验环境
 def get_environment(request):
@@ -49,11 +56,11 @@ def get_environment(request):
 
     user = request.user.username
     issue = request.GET['issue']
-    q = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
-    if q:
-        if int(q[0].download_limit) <= 0:
+    qh = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
+    if qh:
+        if int(qh[0].download_limit) <= 0:
             return HttpResponse('Download times reach max value.')
-        q.update(download_limit=F('download_limit') - 1)
+        qh.update(download_limit=F('download_limit') - 1)
     else:
         Homework.objects.create(student_id=User.objects.get(student_id=user), download_limit=2, issue_id=issue)
 
@@ -202,6 +209,31 @@ def add_student(request):
     else:
         User.objects.create(student_id=add_id, name=add_name)
 
+    return HttpResponse('SUCCESS')
+
+def update_deadline(request):
+    # 如果未登录则跳转到实验台
+    if not request.user.is_authenticated():
+        return HttpResponse('You do not log in.')
+
+    # 查看是否是本课堂老师，不是则拒绝
+    user = request.user.username
+    qu = User.objects.filter(student_id=user)
+    if qu:
+        if qu[0].user_type == 2:
+            qu = qu[0]
+        else:
+            return HttpResponse('Do not have the permission.')
+    else:
+        return HttpResponseRedirect('/')
+
+    issue = request.GET['issue']
+    deadline = request.GET['deadline']
+    qi = Issue.objects.filter(id=issue)
+    if not qi:
+        return HttpResponse('issue is not issued.')
+    
+    qi.update(deadline=deadline)
     return HttpResponse('SUCCESS')
 
 

@@ -31,6 +31,7 @@ apipatterns = [
     url(r'^uploadfile', upload_file),
     url(r'^delstudents', del_students),
     url(r'^addstudent', add_student),
+    url(r'^updatedeadline', update_deadline),
     # both api
     url(r'^check', check_request),
 ]

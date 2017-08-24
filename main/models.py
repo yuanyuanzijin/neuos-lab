@@ -44,8 +44,8 @@ class Homework(models.Model):                                               # id
 class Issue(models.Model):                                                              # id为作业序号，方便以后扩展，此项目中只包含作业1
     issued = models.BooleanField(default=False)                             # 该作业是否被下发，老师第一次登录时点击下发按钮，才可以被下载
     issued_time = models.DateTimeField(null=True, blank=True)
-    request_url = models.URLField(null=True, blank=True)                                # 实验环境获取地址，洋葱给出，手动填入
     deadline = models.DateTimeField(null=True, blank=True)                              # 作业提交截止日期
+    closeline = models.DateTimeField(null=True, blank=True)
     allow_submit = models.BooleanField(default=False)                       # 老师点击下发作业之前或停止收取后，学生无法提交和验收作业，但可以查看结果
     check_time = models.DateTimeField(null=True, blank=True)                            # 老师批量验收的时间
     create_at = models.DateTimeField(auto_now_add=True)          # 数据创建时间

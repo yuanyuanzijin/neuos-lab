@@ -13,7 +13,7 @@ class HomeworkAdmin(admin.ModelAdmin):
                     'create_at', 'update_at')
 
 class IssueAdmin(admin.ModelAdmin):
-    list_display = ('id', 'issued', 'request_url', 'deadline', 'allow_submit', 'check_time', 'create_at', 'update_at')
+    list_display = ('id', 'issued', 'deadline', 'allow_submit', 'check_time', 'create_at', 'update_at')
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Homework, HomeworkAdmin)
