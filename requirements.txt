@@ -1,0 +1,7 @@
+Django==1.11.4
+django-cas-ng==3.5.8
+lxml==3.8.0
+numpy==1.13.1
+pytz==2017.2
+requests==2.18.3
+xlrd==1.0.0

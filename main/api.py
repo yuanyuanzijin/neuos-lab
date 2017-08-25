@@ -293,38 +293,7 @@ def check_request_all(request):
     Issue.objects.filter(id=issue).update(check_time=time)
     return HttpResponse('SUCCESS'+str(qh_all_num)+str(qh_check_num))
 
+# 验收程序检验接口
 def check_start(request):
-    # 如果未登录则跳转到实验台
-    if not request.user.is_authenticated():
-        return HttpResponse('not login')
 
-    user = request.user.username
-    qu = User.objects.get(student_id=user)
-    user_type = qu.user_type
-    issue = request.GET['issue']
-    if qu.github:
-        github = qu.github
-    else:
-        return HttpResponse('Have not bind Github.')
-
-    if qu.homework.repo:
-        repo = qu.homework.repo
-    else:
-        return HttpResponse('Have not submit homework.')
-    homework_id = qu.homework.id
-
-    data = {
-        'issue': 1,
-        'homework_id': homework_id,
-        'github': github,
-        'repo': repo,
-        'user_type': user_type
-    }
-    data = json.dumps(data)
-
-    # 发送请求给检测后台
-
-
-
-    Homework.objects.filter(id=homework_id).update(self_check_result=3)
     return HttpResponse('SUCCESS')
