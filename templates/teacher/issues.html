@@ -120,9 +120,9 @@
                 <td>
                     {% if qh.check_result %}
                         {% if qh.check_result == 1 %}
-                            <span class="green">通过</span>
+                            <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
                         {% elif qh.check_result == 2 %}
-                            <span class="red">未通过</span>
+                            <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
                         {% elif qh.check_result == 3 %}
                             <span class="gray">检测中</span> 
                         {% else %}

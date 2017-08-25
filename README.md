@@ -39,21 +39,23 @@
 
 > CAS_REDIRECT_URL = 'http://your_domain/cas'
 
-> CLIENT_ID = '0e7ffa086913cce028b0'
+> CLIENT_ID = '...'
 
-> CLIENT_SECRET = 'dace5dfc9c3e47685b7bee1500e34725c965226f'`
+> CLIENT_SECRET = '...'
 
 #### 启动网站
 
 在不使用Apache等服务器的情况下，可使用以下指令启动网站：
 
-`python manage.py runserver 0.0.0.0:port`
+`python manage.py runserver 0.0.0.0:8000`
 
 #### 教师信息导入
 
 访问http://your_domain/admin，使用之前配置好的SuperUser账号登录。
 
 打开首页的User表，选择添加user，输入老师的教工号，将user_type设为老师即可。
+
+老师需导入学生学号，否则学生无法登录本平台。同时需要点击下发作业并设置截止时间。
 
 
 ## 开发说明

@@ -33,7 +33,10 @@ apipatterns = [
     url(r'^delstudents', del_students),
     url(r'^addstudent', add_student),
     url(r'^updatedeadline', update_deadline),
-    url(r'^check_all', check_request_all)
+    url(r'^check_all', check_request_all),
+    # check api
+    url(r'^getcheck', check_start),
+    url(r'^checkback', check_back)
 ]
 
 urlpatterns = [
@@ -51,6 +54,5 @@ urlpatterns = [
     url(r'^accounts/logout$', django_cas_ng.views.logout, name='cas_ng_logout'),
 
     url(r'^oauth/login/?$', github_login),
-    #url(r'^logout/?$', github_logout),
     url(r'^oauth/callback/?$', github_callback),
 ]

@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template.loader import get_template
 from django_cas_ng import views as baseviews
-from .models import User, Homework, Issue
+from .models import User, Homework, Issue, Pending
 from django.utils import timezone
 from django.db.models import F
 from django.core.files.storage import get_storage_class
@@ -265,6 +265,7 @@ def check_request(request):
 
     homework_id = qu.homework.id
     Homework.objects.filter(id=homework_id).update(self_check_result=3)
+    Pending.objects.create(homework_id=homework_id, check_type=0)
     return HttpResponse('SUCCESS')
 
 # 老师作业检测
@@ -289,11 +290,53 @@ def check_request_all(request):
         # 检查是否提交作业
         if qh.repo:
             Homework.objects.filter(id=qh.id).update(check_result=3)
+            Pending.objects.create(homework_id=qh.id, check_type=1)
             qh_check_num += 1
     Issue.objects.filter(id=issue).update(check_time=time)
     return HttpResponse('SUCCESS'+str(qh_all_num)+str(qh_check_num))
 
 # 验收程序检验接口
 def check_start(request):
+    pending_list = Pending.objects.all().order_by('id')
+    # 如果没有待检测
+    if pending_list:
+        p = pending_list[0]
+        check_id = p.id
+        qh = Homework.objects.get(id=p.homework_id)
+        github = qh.student_id.github
+        repo = qh.repo
+        response_data = {
+            'code': 0,
+            'check_id': check_id,
+            'github': github,
+            'repo': repo
+        }
+        return HttpResponse(json.dumps(response_data), content_type="application/json") 
 
-    return HttpResponse('SUCCESS')
+    else:
+        response_data= {
+            'code': -1
+        }
+        return HttpResponse(json.dumps(response_data), content_type="application/json") 
+
+def check_back(request):
+    check_id = request.GET['check_id']
+    result = request.GET['result']
+    qp = Pending.objects.filter(id=check_id)
+    # 如果该条存在
+    if qp:
+        qp = qp[0]
+        homework_id = qp.homework_id
+        check_type = qp.check_type
+        # 学生自检
+        if check_type == 0:
+            Homework.objects.filter(id=homework_id).update(self_check_result=result)
+        # 教师验收
+        else:
+            Homework.objects.filter(id=homework_id).update(check_result=result)
+        qp.delete()
+        return HttpResponse('SUCCESS')
+    
+    # 如果该条不存在
+    else:
+        return HttpResponse('FAILED')

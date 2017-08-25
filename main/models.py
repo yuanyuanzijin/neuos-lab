@@ -53,3 +53,8 @@ class Issue(models.Model):                                                      
 
     def __unicode__(self):
         return str(self.id)
+
+class Pending(models.Model):
+    homework_id = models.IntegerField()
+    check_type = models.BooleanField()                              # 0为自检 1为教师验收
+    create_at = models.DateTimeField(auto_now_add=True)             # 数据创建时间

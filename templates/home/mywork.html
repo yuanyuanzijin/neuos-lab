@@ -85,6 +85,7 @@
                             <!-- 如果提交过作业 -->
                             {% if qh.repo %}
                                 <input type="text" class="form-control" id="repo-input" aria-describedby="basic-addon3" value="{{qh.repo}}" disabled>
+                                <span class="input-group-addon">.git</span>
                                 <span class="input-group-btn">
                                     <button id="btn-repo-update" class="btn btn-default" type="button">修改</button>
                                     <button id="btn-repo-input" class="btn btn-success" type="button" style="display: none">提交</button>
@@ -93,6 +94,7 @@
                             <!-- 如果没提交过作业 -->
                             {% else %}
                                 <input type="text" class="form-control" id="repo-input" aria-describedby="basic-addon3">
+                                <span class="input-group-addon">.git</span>
                                 <span class="input-group-btn">
                                     <button id="btn-repo-input" class="btn btn-success" type="button" data-loading-text="提交中...">提交作业</button>
                                 </span>
@@ -125,7 +127,7 @@
         </div>
         <div class="panel-body">
             {% if qh.repo %}
-                <button id="btn-check" type="button" class="btn btn-info">点击检测</button> 
+                <button id="btn-check" type="button" class="btn btn-success" style="width: 120px;height: 40px">点击检测</button> 
                 <div style="margin-top: 20px;">
                     <span>检测结果：</span>
                     <span id="check-result" class="gray">未检测</span>
@@ -228,13 +230,15 @@
     // 如果检测过
     }else{
         $('#btn-check').text('重新检测');
+        $('#btn-check').removeClass('btn-success');
+        $('#btn-check').removeClass('btn-default');
         $('#btn-check').removeAttr('disabled');
         // 如果检测通过
         if(check_result == 1){
-            $('#check-result').html('通过');
+            $('#check-result').html('<span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span><span class="green">通过</span>');
         // 如果检测未通过
         }else if(check_result == 2){
-            $('#check-result').html('未通过');
+            $('#check-result').html('<span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span><span class="red">未通过</span>');
         // 如果检测过程出现错误
         }else{
             $('#check-result').html('Error!');
