@@ -21,7 +21,7 @@
 
 #### 数据库初始化
 
-建立SQLite数据库
+删除开发时的db.sqlite3文件，重新建立SQLite数据库
 
 `python manage.py migrate`
 
@@ -58,4 +58,4 @@
 
 ## 开发说明
 
-请见Wiki[开发说明](http://git.yuanyuanzijin.com/ZijinAI/Neuos/wiki/%E5%BC%80%E5%8F%91%E8%AF%B4%E6%98%8E)
+详见Wiki[开发说明](http://git.yuanyuanzijin.com/ZijinAI/Neuos/wiki/%E5%BC%80%E5%8F%91%E8%AF%B4%E6%98%8E)

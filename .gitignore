@@ -2,4 +2,3 @@
 /.idea/
 /tmp/
 *.pyc
-db.sqlite3
