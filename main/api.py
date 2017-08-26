@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
+import xlrd
+import json
+import hashlib
+import time
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -10,10 +16,10 @@ from .models import User, Homework, Issue, Pending
 from django.utils import timezone
 from django.db.models import F
 from django.core.files.storage import get_storage_class
-import os, xlrd, json
+from django.conf import settings
 
 ################################## 学生操作 ################################################
-# 更新学生姓名
+# 学生更新姓名
 def update_name(request):
     # 如果未登录则跳转到实验台
     if not request.user.is_authenticated():
@@ -24,7 +30,7 @@ def update_name(request):
     User.objects.filter(student_id=user).update(name=name)
     return HttpResponse('SUCCESS')
 
-# 提交作业repo
+# 学生提交作业repo
 def update_repo(request):
     # 如果未登录则跳转到实验台
     if not request.user.is_authenticated():
@@ -36,18 +42,22 @@ def update_repo(request):
     time = timezone.now()
     qh = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
     qi = Issue.objects.filter(id=issue)
+
+    # 当前作业是否存在
     if not qi:
         return HttpResponse('Issue is not issued.')
+
+    # 学生还没有点击获取作业
     if not qh:
         return HttpResponse('Have not get the homework.')
-    
+
+    # 提交入口是否开启
     if qi[0].allow_submit:
         qh.update(repo=repo, submit_time=time)
         return HttpResponse('SUCCESS')
     else:
         return HttpResponse('Is not allowed to submit.')
         
-
 # 下载实验环境
 def get_environment(request):
     # 如果未登录则跳转到实验台
@@ -57,6 +67,8 @@ def get_environment(request):
     user = request.user.username
     issue = request.GET['issue']
     qh = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
+
+    # 判断是否是第一次获取作业
     if qh:
         if int(qh[0].download_limit) <= 0:
             return HttpResponse('Download times reach max value.')
@@ -64,6 +76,12 @@ def get_environment(request):
     else:
         Homework.objects.create(student_id=User.objects.get(student_id=user), download_limit=2, issue_id=issue)
 
+    # 生成实验环境...
+
+
+
+
+    # 返回作业
     filename = 'lv1-ans.tar.gz'
     baseDir = os.path.dirname(os.path.abspath(__name__))
     filepath = os.path.join(baseDir, 'tmp', 'experiments', 'lv1')
@@ -73,7 +91,6 @@ def get_environment(request):
     respose['Content-Type'] = 'application/octet-stream'
     respose['Content-Disposition'] = 'attachment;filename="{0}"'.format(filename)
     return respose
-
 
 ################################ 老师操作 #######################################################
 # 作业下发，允许提交开关设置
@@ -97,25 +114,32 @@ def switch(request, target):
     issue = request.GET['issue']
     time = timezone.now()
     qi = Issue.objects.filter(id=issue)
-    if qi:
-        if target == 'switchissued':
-            if action == 'open':
-                qi.update(issued=True, allow_submit=True, issued_time=time)
-            elif action=='close':
-                qi.update(issued=False, allow_submit=False)
-            else:
-                return HttpResponse('The wrong action.')
 
-        elif target == 'switchallowsubmit':
-            if action == 'open':
-                qi.update(allow_submit=True)
-            elif action=='close':
-                qi.update(allow_submit=False)
-            else:
-                return HttpResponse('The wrong action.')
-        return HttpResponse('SUCCESS')
+    # 该作业是否存在
+    if not qi:
+        return HttpResponse('Issue is not exist')
+
+    # 如果执行的是下发作业开关
+    if target == 'switchissued':
+        if action == 'open':
+            qi.update(issued=True, allow_submit=True, issued_time=time)
+        elif action=='close':
+            qi.update(issued=False, allow_submit=False)
+        else:
+            return HttpResponse('The wrong action.')
+
+    # 如果执行的是提交入口开关
+    elif target == 'switchallowsubmit':
+        if action == 'open':
+            qi.update(allow_submit=True)
+        elif action=='close':
+            qi.update(allow_submit=False)
+        else:
+            return HttpResponse('The wrong action.')
     else:
-        return HttpResponse('ERROR')
+        return HttpResponse('The wrong target.')
+
+    return HttpResponse('SUCCESS')
 
 # 文件上传
 def upload_file(request):
@@ -139,6 +163,7 @@ def upload_file(request):
         if not myFile:
             return HttpResponse("no files for upload!")
 
+        # 保存文件
         baseDir = os.path.dirname(os.path.abspath(__name__))
         fileDir = os.path.join(baseDir,'tmp','upload')
         filename = os.path.join(fileDir, myFile.name)
@@ -147,6 +172,7 @@ def upload_file(request):
             destination.write(chunk)  
         destination.close()
 
+        # 读取文件
         data = xlrd.open_workbook(filename) # 打开xls文件
         table = data.sheets()[0] # 打开第一张表
         nrows = table.nrows # 获取表的行数
@@ -164,10 +190,11 @@ def upload_file(request):
 
         return HttpResponse("SUCCESS")  
 
+# 老师删除学生
 def del_students(request):
     # 如果未登录则跳转到实验台
     if not request.user.is_authenticated():
-        return HttpResponse('You do not log in.')
+        return HttpResponse('You have not logged in.')
 
     # 查看是否是本课堂老师，不是则拒绝
     user = request.user.username
@@ -184,10 +211,11 @@ def del_students(request):
     User.objects.filter(student_id=del_id).delete()
     return HttpResponse('SUCCESS')
     
+# 老师增加学生
 def add_student(request):
     # 如果未登录则跳转到实验台
     if not request.user.is_authenticated():
-        return HttpResponse('You do not log in.')
+        return HttpResponse('You have not logged in.')
 
     # 查看是否是本课堂老师，不是则拒绝
     user = request.user.username
@@ -211,6 +239,7 @@ def add_student(request):
 
     return HttpResponse('SUCCESS')
 
+# 修改截止时间
 def update_deadline(request):
     # 如果未登录则跳转到实验台
     if not request.user.is_authenticated():
@@ -235,7 +264,6 @@ def update_deadline(request):
     
     qi.update(deadline=deadline)
     return HttpResponse('SUCCESS')
-
 
 ######################### 作业检测 #####################################
 # 学生作业检测
@@ -295,9 +323,40 @@ def check_request_all(request):
     Issue.objects.filter(id=issue).update(check_time=time)
     return HttpResponse('SUCCESS'+str(qh_all_num)+str(qh_check_num))
 
-# 验收程序检验接口
-def check_start(request):
-    pending_list = Pending.objects.all().order_by('id')
+# 验收程序获取作业接口
+def get_check(request):
+    stamp = int(request.GET['time'])
+    current_time = int(time.time())
+
+    # 时间600秒以外无效
+    if current_time-stamp > 600:
+        response_data= {
+            'code': -101,
+            'result': 'FAILED',
+            'description': 'Time stamp check failed.'
+        }
+        return HttpResponse(json.dumps(response_data), content_type="application/json") 
+    
+    # 验证签名
+    sign = request.GET['sign']
+    postdata = {
+        'time': str(stamp)
+    }
+    args1 = json.dumps(postdata)  
+    str1 = args1 + settings.SECRET_KEY  
+    m = hashlib.md5()
+    m.update(str1)  
+    psw = m.hexdigest()
+    if psw != sign:
+        response_data= {
+            'code': -100,
+            'result': 'FAILED',
+            'description': 'Sign check failed.'
+        }
+        return HttpResponse(json.dumps(response_data), content_type="application/json") 
+
+    pending_list = Pending.objects.filter(if_check=False).order_by('id')
+
     # 如果没有待检测
     if pending_list:
         p = pending_list[0]
@@ -311,17 +370,42 @@ def check_start(request):
             'github': github,
             'repo': repo
         }
+        p.if_check = True
+        p.save()
         return HttpResponse(json.dumps(response_data), content_type="application/json") 
-
     else:
         response_data= {
-            'code': -1
+            'code': -1,
+            'description': 'No homework pending.'
         }
         return HttpResponse(json.dumps(response_data), content_type="application/json") 
 
+# 验收程序返回结果
 def check_back(request):
     check_id = request.GET['check_id']
     result = request.GET['result']
+    sign = request.GET['sign']
+    
+    # 签名检查
+    postdata = {
+        'check_id': check_id,
+        'result': result
+    }
+    args1 = json.dumps(postdata)  
+    str1 = args1 + settings.SECRET_KEY  
+    m = hashlib.md5()
+    m.update(str1)  
+    psw = m.hexdigest()
+
+    # 签名错误返回
+    if psw != sign:
+        response_data= {
+            'code': -100,
+            'result': 'FAILED',
+            'description': 'Sign check failed.'
+        }
+        return HttpResponse(json.dumps(response_data), content_type="application/json") 
+
     qp = Pending.objects.filter(id=check_id)
     # 如果该条存在
     if qp:
@@ -335,8 +419,19 @@ def check_back(request):
         else:
             Homework.objects.filter(id=homework_id).update(check_result=result)
         qp.delete()
-        return HttpResponse('SUCCESS')
+
+        response_data= {
+            'code': 0,
+            'result': 'SUCCESS',
+        }
+        return HttpResponse(json.dumps(response_data), content_type="application/json") 
     
     # 如果该条不存在
     else:
-        return HttpResponse('FAILED')
+        response_data= {
+            'code': -2,
+            'result': 'FAILED',
+            'description': 'Check_id is not exist.'
+        }
+        return HttpResponse(json.dumps(response_data), content_type="application/json") 
+        

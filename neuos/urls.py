@@ -35,7 +35,7 @@ apipatterns = [
     url(r'^updatedeadline', update_deadline),
     url(r'^check_all', check_request_all),
     # check api
-    url(r'^getcheck', check_start),
+    url(r'^getcheck', get_check),
     url(r'^checkback', check_back)
 ]
 

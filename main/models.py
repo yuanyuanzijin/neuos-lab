@@ -27,7 +27,7 @@ class Homework(models.Model):                                               # id
     student_id = models.OneToOneField(User, null=True)                                     # 学号
     issue_id = models.CharField(max_length=10)                              # 作业序号（第几次序号）
     download_limit = models.CharField(max_length=10, null=True, blank=True)             # 下载次数
-    repo = models.CharField(max_length=10, null=True, blank=True)                       # 提交的repo名称
+    repo = models.CharField(max_length=30, null=True, blank=True)                       # 提交的repo名称
     submit_time = models.DateTimeField(null=True, blank=True)                           # 提交时间
     self_check_result = models.IntegerField(default=0)                      # 0未检测 1通过 2未通过 3检测中 4错误
     check_result = models.IntegerField(default=0)                      # 0未检测 1通过 2未通过 3检测中 4错误
@@ -57,4 +57,5 @@ class Issue(models.Model):                                                      
 class Pending(models.Model):
     homework_id = models.IntegerField()
     check_type = models.BooleanField()                              # 0为自检 1为教师验收
+    if_check = models.BooleanField(default=False)
     create_at = models.DateTimeField(auto_now_add=True)             # 数据创建时间

@@ -128,7 +128,7 @@
         <div class="panel-body">
             {% if qh.repo %}
                 <button id="btn-check" type="button" class="btn btn-success" style="width: 120px;height: 40px">点击检测</button> 
-                <div style="margin-top: 20px;">
+                <div id="div-check" style="margin-top: 20px; display:none">
                     <span>检测结果：</span>
                     <span id="check-result" class="gray">未检测</span>
                     <a href="/home/mywork/" style="margin-left: 10px">刷新</a>  
@@ -227,12 +227,14 @@
         $('#btn-check').text('正在检测...');
         $('#btn-check').attr('disabled', 'True');
         $('#check-result').html('请稍后刷新查看');
+        $('#div-check').css('display', 'block');
     // 如果检测过
     }else{
         $('#btn-check').text('重新检测');
         $('#btn-check').removeClass('btn-success');
         $('#btn-check').removeClass('btn-default');
         $('#btn-check').removeAttr('disabled');
+        $('#div-check').css('display', 'block');
         // 如果检测通过
         if(check_result == 1){
             $('#check-result').html('<span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span><span class="green">通过</span>');
@@ -250,6 +252,7 @@
         $('#btn-check').text('正在检测...');
         $('#btn-check').attr('disabled', 'True');
         $('#check-result').html('请稍后刷新查看');
+        $('#div-check').css('display', 'block');
         issue = 1;
         $.ajax({
             type: "GET",
