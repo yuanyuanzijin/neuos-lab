@@ -2,7 +2,4 @@
 /.idea/
 *.xls
 *.xlsx
-*.tar.gz
 *.pyc
-md5.py
-md5_2.py
