@@ -4,3 +4,5 @@
 *.xls
 *.xlsx
 *.pyc
+tmp/experiments/
+tmp/upload/

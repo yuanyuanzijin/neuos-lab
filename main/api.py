@@ -77,13 +77,10 @@ def get_environment(request):
         Homework.objects.create(student_id=User.objects.get(student_id=user), download_limit=2, issue_id=issue)
 
     # 生成实验环境...
-
-
-
-
-    # 返回作业
-    filename = 'lv1-ans.tar.gz'
     baseDir = os.path.dirname(os.path.abspath(__name__))
+    os.system("sh "+baseDir+"/tmp/create_exp.sh " + user)
+    # 返回作业
+    filename = user + '_lv1.tar.gz'
     filepath = os.path.join(baseDir, 'tmp', 'experiments', 'lv1')
     storge = get_storage_class()(filepath)
     
