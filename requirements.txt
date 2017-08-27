@@ -5,8 +5,4 @@ numpy==1.13.1
 pytz==2017.2
 requests==2.18.3
 xlrd==1.0.0
-dj-database-url
-dj-static
-gunicorn
-psycopg2
 oauth2

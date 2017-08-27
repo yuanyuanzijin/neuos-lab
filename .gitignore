@@ -1,5 +1,6 @@
 /src/
 /.idea/
+/.vscode/
 *.xls
 *.xlsx
 *.pyc

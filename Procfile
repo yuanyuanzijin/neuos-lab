@@ -1,1 +1,0 @@
-web: gunicorn neuos.wsgi --log-file -

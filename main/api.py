@@ -357,16 +357,18 @@ def get_check(request):
 
     pending_list = Pending.objects.filter(if_check=False).order_by('id')
 
-    # 如果没有待检测
+    # 如果有待检测
     if pending_list:
         p = pending_list[0]
         check_id = p.id
         qh = Homework.objects.get(id=p.homework_id)
         github = qh.student_id.github
         repo = qh.repo
+        issue = qh.issue_id
         response_data = {
             'code': 0,
             'check_id': check_id,
+            'issue': issue,
             'github': github,
             'repo': repo
         }
@@ -386,7 +388,7 @@ def check_back(request):
     result = request.GET['result']
     sign = request.GET['sign']
     
-    # 签名检查
+    # 验证签名
     postdata = {
         'check_id': check_id,
         'result': result
@@ -396,8 +398,6 @@ def check_back(request):
     m = hashlib.md5()
     m.update(str1)  
     psw = m.hexdigest()
-
-    # 签名错误返回
     if psw != sign:
         response_data= {
             'code': -100,
