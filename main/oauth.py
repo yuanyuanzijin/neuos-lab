@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import oauth2 as oauth
 import requests
 import json
@@ -32,7 +33,12 @@ def github_callback(request):
     userinfo = json.loads(str(userinfo))
     github_name = userinfo['login']
 
-    user = request.user.username
-    qu = User.objects.filter(student_id=user).update(github=github_name)
+    if not User.objects.filter(github=github_name).exists():
+        user = request.user.username
+        qu = User.objects.filter(student_id=user).update(github=github_name)
+        return HttpResponseRedirect('/home/myinfo/')
+    else:
+        return HttpResponse('该Github账号已被其他学生绑定，请更换。')
+    
 
-    return HttpResponseRedirect('/home/myinfo/')
+    
