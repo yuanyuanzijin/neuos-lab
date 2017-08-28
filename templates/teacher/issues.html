@@ -4,6 +4,7 @@
 
 {% block content %}
 
+{% if qi %}
 <!-- 作业概况 -->
 <div style="font-size: 16px;">
     <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline">
@@ -70,7 +71,12 @@
         <hr>
         <!-- 是否设置截止时间 -->
         {% if qi.deadline %}
-            <span>截止时间：{{qi.deadline}}</span>
+            截止时间：
+            {% if qi.deadline <= time %}
+                <span class="red">{{qi.deadline}}（已过期）</span>
+            {% else %}
+                <span class="green">{{qi.deadline}}</span>
+            {% endif %}
             <button class="btn btn-default" data-toggle="modal" data-target="#deadlineModal">修改</button>
         {% else %}
             <span>截止时间：<span class="red">未设置</span></span>
@@ -245,18 +251,20 @@
     // 展现当前截止时间
     var getdeadline = '{{qi.deadline}}';
     var re = getdeadline.match(/\d+/g);
-    if(re[1].length == 1){
-        re[1] = '0'+re[1];
+    if(re){
+        if(re[1].length == 1){
+            re[1] = '0'+re[1];
+        }
+        if(re[2].length == 1){
+            re[2] = '0'+re[2];
+        }
+        var current_date = re[0]+'-'+re[1]+'-'+re[2];
+        var current_time = re[3]+':'+re[4];
+        console.log(current_date, current_time);
+        $('#choose-date').val(current_date);
+        $('#choose-time').val(current_time);
     }
-    if(re[2].length == 1){
-        re[2] = '0'+re[2];
-    }
-    var current_date = re[0]+'-'+re[1]+'-'+re[2];
-    var current_time = re[3]+':'+re[4];
-    console.log(current_date, current_time);
-    $('#choose-date').val(current_date);
-    $('#choose-time').val(current_time);
-
+    
     // 开关下发按钮
     $('#switch_issued').on('click', function(){
         issue = 1;
@@ -329,4 +337,9 @@
     })
 </script>
 
+{% else %}
+<div class="alert alert-warning alert-dismissible" role="alert">
+    作业信息不存在。<a href="/api/addissue?issue=1">点击添加</a>作业一。
+</div>
+{% endif %}
 {% endblock %}

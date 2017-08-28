@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template.loader import get_template
 from django_cas_ng import views as baseviews
+from django.utils import timezone
 from .models import User, Homework, Issue
 
 ############################ 登录界面 ############################################################
@@ -175,9 +176,12 @@ def issues(request):
         return HttpResponseRedirect('/')
 
     issue = 1
+    time = timezone.now()
     permission = True
     template = get_template('teacher/issues.html')
-    qi = Issue.objects.filter(id=issue)[0]
+    qi = Issue.objects.filter(id=issue)
+    if qi:
+        qi = qi[0]
     qs_not_all = User.objects.filter(user_type=1).order_by('student_id').exclude(homework__repo__isnull=False)
     qh_all = Homework.objects.filter(issue_id=issue)
     return HttpResponse(template.render(locals()))

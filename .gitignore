@@ -6,3 +6,5 @@
 *.pyc
 tmp/experiments/
 tmp/upload/
+db.sqlite3
+settings.py

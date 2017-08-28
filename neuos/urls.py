@@ -27,6 +27,7 @@ apipatterns = [
     url(r'getenv', get_environment),
     url(r'^check_one', check_request),
     # teacher api
+    url(r'^addissue', add_issue),
     url(r'^(switchissued)', switch),
     url(r'^(switchallowsubmit)', switch),
     url(r'^uploadfile', upload_file),

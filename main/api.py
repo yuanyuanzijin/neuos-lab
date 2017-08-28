@@ -90,6 +90,27 @@ def get_environment(request):
     return respose
 
 ################################ 老师操作 #######################################################
+# 老师添加作业
+def add_issue(request):
+    # 如果未登录则跳转到实验台
+    if not request.user.is_authenticated():
+        return HttpResponse('You have not logged in.')
+
+    # 查看是否是本课堂老师，不是则拒绝
+    user = request.user.username
+    qu = User.objects.filter(student_id=user)
+    if qu:
+        if qu[0].user_type == 2:
+            qu = qu[0]
+        else:
+            return HttpResponse('Do not have the permission.')
+    else:
+        return HttpResponseRedirect('/')
+
+    issue = request.GET['issue']
+    Issue.objects.create(id=issue,issued=True)
+    return HttpResponseRedirect('/teacher/issues')
+
 # 作业下发，允许提交开关设置
 def switch(request, target):
     # 如果未登录则跳转到实验台
