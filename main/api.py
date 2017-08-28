@@ -17,6 +17,7 @@ from django.utils import timezone
 from django.db.models import F
 from django.core.files.storage import get_storage_class
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 ################################## 学生操作 ################################################
 # 学生更新姓名
@@ -342,114 +343,118 @@ def check_request_all(request):
     return HttpResponse('SUCCESS'+str(qh_all_num)+str(qh_check_num))
 
 # 验收程序获取作业接口
+@csrf_exempt
 def get_check(request):
-    stamp = int(request.GET['time'])
-    current_time = int(time.time())
+    if request.method == 'POST':
+        stamp = int(request.POST['time'])
+        current_time = int(time.time())
 
-    # 时间600秒以外无效
-    if current_time-stamp > 600:
-        response_data= {
-            'code': -101,
-            'result': 'FAILED',
-            'description': 'Time stamp check failed.'
+        # 时间600秒以外无效
+        if current_time-stamp > 600:
+            response_data= {
+                'code': -101,
+                'result': 'FAILED',
+                'description': 'Time stamp check failed.'
+            }
+            return HttpResponse(json.dumps(response_data), content_type="application/json") 
+        
+        # 验证签名
+        sign = request.POST['sign']
+        postdata = {
+            'time': str(stamp)
         }
-        return HttpResponse(json.dumps(response_data), content_type="application/json") 
-    
-    # 验证签名
-    sign = request.GET['sign']
-    postdata = {
-        'time': str(stamp)
-    }
-    args1 = json.dumps(postdata)  
-    str1 = args1 + settings.SECRET_KEY  
-    m = hashlib.md5()
-    m.update(str1)  
-    psw = m.hexdigest()
-    if psw != sign:
-        response_data= {
-            'code': -100,
-            'result': 'FAILED',
-            'description': 'Sign check failed.'
-        }
-        return HttpResponse(json.dumps(response_data), content_type="application/json") 
+        args1 = json.dumps(postdata)  
+        str1 = args1 + settings.SECRET_KEY  
+        m = hashlib.md5()
+        m.update(str1)  
+        psw = m.hexdigest()
+        if psw != sign:
+            response_data= {
+                'code': -100,
+                'result': 'FAILED',
+                'description': 'Sign check failed.'
+            }
+            return HttpResponse(json.dumps(response_data), content_type="application/json") 
 
-    pending_list = Pending.objects.filter(if_check=False).order_by('id')
+        pending_list = Pending.objects.filter(if_check=False).order_by('id')
 
-    # 如果有待检测
-    if pending_list:
-        p = pending_list[0]
-        check_id = p.id
-        qh = Homework.objects.get(id=p.homework_id)
-        github = qh.student_id.github
-        repo = qh.repo
-        issue = qh.issue_id
-        response_data = {
-            'code': 0,
-            'check_id': check_id,
-            'issue': issue,
-            'github': github,
-            'repo': repo
-        }
-        p.if_check = True
-        p.save()
-        return HttpResponse(json.dumps(response_data), content_type="application/json") 
-    else:
-        response_data= {
-            'code': -1,
-            'description': 'No homework pending.'
-        }
-        return HttpResponse(json.dumps(response_data), content_type="application/json") 
+        # 如果有待检测
+        if pending_list:
+            p = pending_list[0]
+            check_id = p.id
+            qh = Homework.objects.get(id=p.homework_id)
+            github = qh.student_id.github
+            repo = qh.repo
+            issue = qh.issue_id
+            response_data = {
+                'code': 0,
+                'check_id': check_id,
+                'issue': issue,
+                'github': github,
+                'repo': repo
+            }
+            p.if_check = True
+            p.save()
+            return HttpResponse(json.dumps(response_data), content_type="application/json") 
+        else:
+            response_data= {
+                'code': -1,
+                'description': 'No homework pending.'
+            }
+            return HttpResponse(json.dumps(response_data), content_type="application/json") 
 
 # 验收程序返回结果
+@csrf_exempt
 def check_back(request):
-    check_id = request.GET['check_id']
-    result = request.GET['result']
-    sign = request.GET['sign']
-    
-    # 验证签名
-    postdata = {
-        'check_id': check_id,
-        'result': result
-    }
-    args1 = json.dumps(postdata)  
-    str1 = args1 + settings.SECRET_KEY  
-    m = hashlib.md5()
-    m.update(str1)  
-    psw = m.hexdigest()
-    if psw != sign:
-        response_data= {
-            'code': -100,
-            'result': 'FAILED',
-            'description': 'Sign check failed.'
+    if request.method == 'POST':
+        check_id = request.POST['check_id']
+        result = request.POST['result']
+        sign = request.POST['sign']
+        
+        # 验证签名
+        postdata = {
+            'check_id': check_id,
+            'result': result
         }
-        return HttpResponse(json.dumps(response_data), content_type="application/json") 
+        args1 = json.dumps(postdata)  
+        str1 = args1 + settings.SECRET_KEY  
+        m = hashlib.md5()
+        m.update(str1)  
+        psw = m.hexdigest()
+        if psw != sign:
+            response_data= {
+                'code': -100,
+                'result': 'FAILED',
+                'description': 'Sign check failed.'
+            }
+            return HttpResponse(json.dumps(response_data), content_type="application/json") 
 
-    qp = Pending.objects.filter(id=check_id)
-    # 如果该条存在
-    if qp:
-        qp = qp[0]
-        homework_id = qp.homework_id
-        check_type = qp.check_type
-        # 学生自检
-        if check_type == 0:
-            Homework.objects.filter(id=homework_id).update(self_check_result=result)
-        # 教师验收
+        qp = Pending.objects.filter(id=check_id)
+        # 如果该条存在
+        if qp:
+            qp = qp[0]
+            homework_id = qp.homework_id
+            check_type = qp.check_type
+            # 学生自检
+            if check_type == 0:
+                Homework.objects.filter(id=homework_id).update(self_check_result=result)
+            # 教师验收
+            else:
+                Homework.objects.filter(id=homework_id).update(check_result=result)
+            qp.delete()
+
+            response_data= {
+                'code': 0,
+                'result': 'SUCCESS',
+            }
+            return HttpResponse(json.dumps(response_data), content_type="application/json") 
+        
+        # 如果该条不存在
         else:
-            Homework.objects.filter(id=homework_id).update(check_result=result)
-        qp.delete()
-
-        response_data= {
-            'code': 0,
-            'result': 'SUCCESS',
-        }
-        return HttpResponse(json.dumps(response_data), content_type="application/json") 
-    
-    # 如果该条不存在
-    else:
-        response_data= {
-            'code': -2,
-            'result': 'FAILED',
-            'description': 'Check_id is not exist.'
-        }
-        return HttpResponse(json.dumps(response_data), content_type="application/json") 
+            response_data= {
+                'code': -2,
+                'result': 'FAILED',
+                'description': 'Check_id is not exist.'
+            }
+            return HttpResponse(json.dumps(response_data), content_type="application/json") 
         
