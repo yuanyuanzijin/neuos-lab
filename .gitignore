@@ -9,3 +9,4 @@ tmp/upload/
 db.sqlite3
 settings.py
 create_exp.sh
+secret_key.txt
