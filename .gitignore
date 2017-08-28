@@ -7,6 +7,6 @@
 tmp/experiments/
 tmp/upload/
 db.sqlite3
-settings.py
 create_exp.sh
 secret_key.txt
+neuos/settings.py
