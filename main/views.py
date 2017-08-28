@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from django.template.loader import get_template
 from django_cas_ng import views as baseviews
 from django.utils import timezone
+from django.contrib import auth
 from .models import User, Homework, Issue
 
 ############################ 登录界面 ############################################################
@@ -185,3 +186,8 @@ def issues(request):
     qs_not_all = User.objects.filter(user_type=1).order_by('student_id').exclude(homework__repo__isnull=False)
     qh_all = Homework.objects.filter(issue_id=issue)
     return HttpResponse(template.render(locals()))
+
+################ 退出登录 ###################################
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/')
