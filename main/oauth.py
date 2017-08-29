@@ -27,7 +27,6 @@ def github_callback(request):
         'code': request.GET['code']
     }
     back = requests.post(access_token_url, data=data).text
-    print back
     access_token = re.match('^access_token=(\w+)&', back).group(1)
     userinfo = requests.get(authenticate_url+'?access_token='+access_token).text.encode('utf-8')
     userinfo = json.loads(str(userinfo))

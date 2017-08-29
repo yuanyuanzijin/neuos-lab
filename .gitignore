@@ -10,3 +10,4 @@ db.sqlite3
 create_exp.sh
 secret_key.txt
 neuos/settings.py
+Scripts/

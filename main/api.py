@@ -6,6 +6,7 @@ import xlrd
 import json
 import hashlib
 import time
+import requests
 
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -41,6 +42,7 @@ def update_repo(request):
     issue = request.GET['issue']
     user = request.user.username
     time = timezone.now()
+
     qh = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
     qi = Issue.objects.filter(id=issue)
 
@@ -52,6 +54,12 @@ def update_repo(request):
     if not qh:
         return HttpResponse('Have not get the homework.')
 
+    github = qh[0].student_id.github
+    back = requests.get('https://api.github.com/repos/'+github+'/'+repo).text
+    back = json.loads(back)
+    if 'id' not in back:
+        return HttpResponse('NOTEXIST')
+    
     # 提交入口是否开启
     if qi[0].allow_submit:
         qh.update(repo=repo, submit_time=time)

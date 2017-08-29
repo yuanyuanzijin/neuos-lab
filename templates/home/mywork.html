@@ -202,6 +202,14 @@
                     $('#btn-reload').on('click', function(){
                         window.location.reload();
                     })
+                // 如果repo名称填写错误
+                }else if(data == 'NOTEXIST'){
+                    // 弹出repo错误模态框
+                    $('#repoerror').modal({
+                        backdrop: 'static',
+                        keyboard: false,
+                        show: true
+                    })
                 // 如果返回失败
                 }else{
                     console.log('修改失败');
@@ -289,4 +297,19 @@
         </div>
     </div>
 
+<!-- repo不存在模态框 -->
+<div id="repoerror" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">提示</h4>
+        </div>
+        <div class="modal-body">
+          <p>该repo不存在，请检查作业名称！</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">返回</button>
+        </div>
+      </div>
+    </div>
 {% endblock %}
