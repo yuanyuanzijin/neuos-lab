@@ -59,29 +59,29 @@
             <th>操作</th>
         </thead>
         <tbody>
-        {% for qi in qi_all %}
+        {% for homework in homework_list %}
             <tr>
                 <!-- 作业序号 -->
-                <td>{{qi.id}}</td>
+                <td>{{homework.qi.id}}</td>
                 <!-- 提交入口 -->
                 <td>
-                {% if qi.allow_submit %}
+                {% if homework.qi.allow_submit %}
                     <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
                 {% else %}
                     <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
                 {% endif %}
                 </td>
                 <!-- 截止时间 -->
-                <td>{{qi.deadline}}</td>
+                <td>{{homework.qi.deadline}}</td>
                 <!-- 提交时间 -->
                 <td>
-                {% if qh.repo %} {{qh.submit_time}} {% else %}
+                {% if homework.qh.repo %} {{homework.qh.submit_time}} {% else %}
                 <span class="red">未提交</span> {% endif %}
                 </td>
                 <!-- 是否按时 -->
                 <td>
-                {% if qh.submit_time %} 
-                    {% if qh.submit_time < qi.deadline %} 
+                {% if homework.qh.submit_time %}
+                    {% if homework.qh.submit_time < homework.qi.deadline %}
                     <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
                     {% else %}
                     <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span> 
@@ -92,11 +92,11 @@
                 </td>
                 <!-- 检测结果 -->
                 <td>
-                {% if qh.self_check_result == 1 %}
+                {% if homework.qh.self_check_result == 1 %}
                     <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span> 
-                {% elif qh.self_check_result == 2 %}
+                {% elif homework.qh.self_check_result == 2 %}
                     <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span> 
-                {% elif qh.self_check_result == 3 %}
+                {% elif homework.qh.self_check_result == 3 %}
                     <span class="gray">检测中</span> 
                 {% else %}
                     <span class="gray">未检测</span> 

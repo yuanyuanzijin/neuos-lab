@@ -62,7 +62,6 @@
         </div>
         <div class="panel-body" id="div-getenv">
             <button id="btn-getenv" class="btn btn-success" type="submit">下载实验环境</button>
-            {% ifequal qi.id 1 %}
             <span class="gray">
                 <span>剩余次数：</span>
                 {% if qh %}
@@ -71,7 +70,6 @@
                     <span id="span-times">3</span>
                 {% endif %}
             </span>
-            {% endifequal %}
         </div>
     </div>
 
@@ -81,7 +79,7 @@
             <h3 class="panel-title">作业提交</h3>
         </div>
         <!-- 如果有Homework数据（下载过作业） -->
-        {% if qh %}
+        {% if qh or tmp %}
             <div class="panel-body">
                 <!-- 如果绑定过Github -->
                 {% if qu.github %}
@@ -184,7 +182,7 @@
 
     // 点击作业提交按钮
     $('#btn-repo-input').on('click', function(){
-        issue = 1;
+        issue = {{ issue }};
         repo = $('#repo-input').val();
         // 如果输入为空则返回
         if(!repo){return}

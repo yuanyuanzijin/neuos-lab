@@ -47,13 +47,15 @@ def home(request):
     else:
         return HttpResponseRedirect('/')
 
-    issue = 1
     template = get_template('home/home.html')
     qi_all = Issue.objects.all()
-    qh = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
-    if qh:
-        qh = qh[0]
-    
+    homework_list = []
+    for qi in qi_all:
+        qh = Homework.objects.filter(student_id__student_id=user, issue_id=qi.id)
+        homework_list.append({
+            'qi': qi,
+            'qh': qh[0]
+        })
     return HttpResponse(template.render(locals()))
         
 
@@ -84,6 +86,8 @@ def mywork(request, id):
     qh = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
     if qh:
         qh = qh[0]
+    if issue >= 2:
+        tmp = 1
     return HttpResponse(template.render(locals()))
 
 def myinfo(request):
@@ -201,7 +205,7 @@ def issues(request, id):
     qi = Issue.objects.filter(id=issue)
     if qi:
         qi = qi[0]
-    qs_not_all = User.objects.filter(user_type=1).order_by('student_id').exclude(homework__repo__isnull=False)
+    qs_not_all = User.objects.filter(user_type=1).order_by('student_id').exclude(homework__repo__isnull=False, homework__issue_id=issue)
     qh_all = Homework.objects.filter(issue_id=issue)
     return HttpResponse(template.render(locals()))
 

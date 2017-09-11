@@ -94,7 +94,9 @@
 <div class="panel panel-success" style="max-width: 900px">
     <div class="panel-heading">
         <h3 class="panel-title" style="display: inline">已提交作业</h3>
-        <button class="btn btn-info" style="float: right;margin-top:-6px;margin-right:10px" data-toggle="modal" data-target="#checkModal">验收全部</button>        
+        {% ifequal issue 1 %}
+        <button class="btn btn-info" style="float: right;margin-top:-6px;margin-right:10px" data-toggle="modal" data-target="#checkModal">验收全部</button>
+        {% endifequal %}
     </div>
     <table class="table table-hover">
         <thead>

@@ -24,7 +24,7 @@ class User(models.Model):                                                   # id
 
 
 class Homework(models.Model):                                               # id为作业生成顺序，每位同学第一次下载作业时建立此表
-    student_id = models.OneToOneField(User, null=True)                                     # 学号
+    student_id = models.ForeignKey(User, null=True, on_delete=models.CASCADE)                                     # 学号
     issue_id = models.CharField(max_length=10)                              # 作业序号（第几次序号）
     download_limit = models.CharField(max_length=10, null=True, blank=True)             # 下载次数
     repo = models.CharField(max_length=30, null=True, blank=True)                       # 提交的repo名称
