@@ -20,13 +20,13 @@
             <th>操作</th>
         </thead>
         <tbody>
-        {% for qi in qi_all %}
+        {% for qh in qh_list %}
             <tr>
                 <!-- 作业序号 -->
-                <td>{{qi.id}}</td>
+                <td>{{qh.qi.id}}</td>
                 <!-- 是否下发下发 -->
                 <td>
-                    {% if qi.issued %}
+                    {% if qh.qi.issued %}
                         <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
                     {% else %}
                         <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
@@ -34,22 +34,22 @@
                 </td>
                 <!-- 提交入口 -->
                 <td>
-                    {% if qi.allow_submit %}
+                    {% if qh.qi.allow_submit %}
                         <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
                     {% else %}
                         <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
                     {% endif %}
                 </td>
                 <!-- 截止时间 -->
-                <td>{{qi.deadline}}</td>
+                <td>{{qh.qi.deadline}}</td>
                 <!-- 已下载 -->
-                <td>{{download_num}}</td>
+                <td>{{qh.download_num}}</td>
                 <!-- 已提交 -->
-                <td>{{submit_num}}</td>
+                <td>{{qh.submit_num}}</td>
                 <!-- 验收通过 -->
-                <td>{{pass_num}}</td>
+                <td>{{qh.pass_num}}</td>
                 <!-- 管理 -->
-                <td><a href="/teacher/issues/">管理</a></td>
+                <td><a href="/teacher/issues/{{ qh.qi.id }}">管理</a></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -70,7 +70,7 @@
             <tr>
             <td>{{student_num}}</td>
             <td>{{github_num}}</td>
-            <td><a href="/teacher/students/">管理1</a></td>
+            <td><a href="/teacher/students/">管理</a></td>
             </tr>
         </tbody>
     </table>

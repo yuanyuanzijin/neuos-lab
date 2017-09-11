@@ -9,8 +9,14 @@
 <!-- 导航信息 -->
 <div style="font-size: 16px;">
     <!-- 选择作业 -->
-    <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline">
-        <option>作业一</option>
+    <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline" onchange="self.location.href=options[selectedIndex].value">
+        {% for id in issue_num %}
+            {% ifequal id issue %}
+                <option value="/home/mywork/{{ id }}" selected="selected">作业{{ id }}</option>
+            {% else %}
+                <option value="/home/mywork/{{ id }}">作业{{ id }}</option>
+            {% endifequal %}
+        {% endfor %}
     </select>
     <!-- 是否下发 -->
     <span style="margin-left: 20px;">
@@ -56,6 +62,7 @@
         </div>
         <div class="panel-body" id="div-getenv">
             <button id="btn-getenv" class="btn btn-success" type="submit">下载实验环境</button>
+            {% ifequal qi.id 1 %}
             <span class="gray">
                 <span>剩余次数：</span>
                 {% if qh %}
@@ -64,6 +71,7 @@
                     <span id="span-times">3</span>
                 {% endif %}
             </span>
+            {% endifequal %}
         </div>
     </div>
 
@@ -119,7 +127,7 @@
             </div>
         {% endif %}
     </div>
-    
+    {% ifequal issue 1 %}
     <!-- 作业检测板块 -->
     <div class="panel panel-success" style="max-width: 700px">
         <div class="panel-heading">
@@ -138,6 +146,7 @@
             {% endif %}
         </div>
     </div>
+    {% endifequal %}
 
 {% endif %}
 
@@ -167,7 +176,7 @@
         }else{
             setTimeout("$('#btn-getenv').removeAttr('disabled');$('#btn-getenv').text('下载实验环境');", '5000');
         }
-        window.location.href = '/api/getenv?issue=1';
+        window.location.href = '/api/getenv?issue={{ issue }}';
         })
     }
 

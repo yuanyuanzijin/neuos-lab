@@ -43,11 +43,11 @@ apipatterns = [
 urlpatterns = [
     url(r'^$', index),
     url(r'^home/$', home),
-    url(r'^home/mywork', mywork),
+    url(r'^home/mywork/(\d+)?', mywork),
     url(r'^home/myinfo', myinfo),
     url(r'^teacher/$', teacher),
     url(r'^teacher/students', students),
-    url(r'^teacher/issues', issues),
+    url(r'^teacher/issues/(\d+)?', issues),
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(apipatterns)),
 

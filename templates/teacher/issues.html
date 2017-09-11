@@ -7,10 +7,15 @@
 {% if qi %}
 <!-- 作业概况 -->
 <div style="font-size: 16px;">
-    <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline">
-        <option>作业一</option>
+    <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline" onchange="self.location.href=options[selectedIndex].value">
+        {% for id in issue_num %}
+            {% ifequal id issue %}
+                <option value="/teacher/issues/{{ id }}" selected="selected">作业{{ id }}</option>
+            {% else %}
+                <option value="/teacher/issues/{{ id }}">作业{{ id }}</option>
+            {% endifequal %}
+        {% endfor %}
     </select>
-    
     <span style="margin-left: 20px;">
         {% if qi.issued %}
             <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
@@ -267,7 +272,7 @@
     
     // 开关下发按钮
     $('#switch_issued').on('click', function(){
-        issue = 1;
+        issue = {{ issue }};
         action = $('#switch_issued')[0].getAttribute('action');
         $.ajax({
             type: "GET",
@@ -288,7 +293,7 @@
     
     // 开关允许提交按钮
     $('#switch_allow_submit').on('click', function(){
-        issue = 1;
+        issue = {{ issue }};
         action = $('#switch_allow_submit')[0].getAttribute('action');
     
         $.ajax({
@@ -310,7 +315,7 @@
         
     // 提交新截止时间
     $('#deadline-submit').on('click', function(){
-        var issue = 1;
+        var issue = {{ issue }};
         var date = $('#choose-date').val();
         var time = $('#choose-time').val();
         var deadline = date+('%20'+time);
@@ -326,7 +331,7 @@
         
     // 批量验收按钮
     $('#check-all-submit').on('click', function(){
-        issue = 1;
+        issue = {{ issue }};
         $.ajax({
             type: 'GET',
             url: '/api/check_all?issue='+issue,

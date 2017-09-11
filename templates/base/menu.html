@@ -20,9 +20,11 @@
     var path = window.location.pathname;
     var menus = $('#menulist').children('a');
     var menus_num = menus.length;
-    for(var i=0; i<menus_num; i++){
-        if(menus[i].getAttribute('href') == path){
+    for(var i = menus_num-1; i>=0; i--){
+        // if(menus[i].getAttribute('href').indexOf(path) >= 0){
+        if(path.indexOf(menus[i].getAttribute('href')) >= 0){
             $(menus[i]).addClass('active');
+            break;
         }
     }
 </script>

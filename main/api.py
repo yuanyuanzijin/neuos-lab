@@ -75,6 +75,8 @@ def get_environment(request):
 
     user = request.user.username
     issue = request.GET['issue']
+
+
     qh = Homework.objects.filter(student_id__student_id=user, issue_id=issue)
 
     # 判断是否是第一次获取作业
@@ -84,7 +86,16 @@ def get_environment(request):
         qh.update(download_limit=F('download_limit') - 1)
     else:
         Homework.objects.create(student_id=User.objects.get(student_id=user), download_limit=2, issue_id=issue)
-
+    if issue != 1:
+        baseDir = os.path.dirname(os.path.abspath(__name__))
+        filename = 'lv'+issue+'-env.tar.gz'
+        filepath = os.path.join(baseDir, 'tmp', 'experiments', 'lv'+issue)
+        storge = get_storage_class()(filepath)
+        respose = HttpResponse(storge.open(filename))
+        qh.update(download_limit=2)
+        respose['Content-Type'] = 'application/octet-stream'
+        respose['Content-Disposition'] = 'attachment;filename="{0}"'.format(filename)
+        return respose
     # 生成实验环境...
     baseDir = os.path.dirname(os.path.abspath(__name__))
     os.system("sh "+baseDir+"/tmp/create_exp.sh " + user)

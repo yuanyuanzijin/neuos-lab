@@ -57,12 +57,16 @@ def home(request):
     return HttpResponse(template.render(locals()))
         
 
-def mywork(request):
+def mywork(request, id):
     # 如果未登录则跳转到首页
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/')
 
-    issue = 1
+    issue_num = range(1, Issue.objects.count() + 1)
+    if id:
+        issue = int(id)
+    else:
+        issue = Issue.objects.count()
     user = request.user.username
     qu = User.objects.filter(student_id=user)
     if qu:
@@ -120,15 +124,25 @@ def teacher(request):
     permission = True
     template = get_template('teacher/teacher.html')
     qi_all = Issue.objects.all()                                                # 所有布置的作业
+    qh_list = []
+    for qi in qi_all:
+        qh_all = Homework.objects.filter(issue_id=qi.id)                                # 作业1所有下载(学生下载实验环境后才会在Homework表插入数据)
+        download_num = len(qh_all)                                                    # 锁业1所有下载数
 
-    qh_all = Homework.objects.filter(issue_id=1)                                # 作业1所有下载(学生下载实验环境后才会在Homework表插入数据)
-    download_num = len(qh_all)                                                    # 锁业1所有下载数
+        qh_all_submit = qh_all.filter(repo__isnull=False)                                  # 作业1所有提交
+        submit_num = len(qh_all_submit)                                             # 作业1所有提交数
 
-    qh_all_submit = qh_all.filter(repo__isnull=False)                                  # 作业1所有提交
-    submit_num = len(qh_all_submit)                                             # 作业1所有提交数
-
-    qh_all_pass = qh_all.filter(check_result=1)                                     # 作业1所有通过
-    pass_num = len(qh_all_pass)                                                 # 作业1所有通过数
+        qh_all_pass = qh_all.filter(check_result=1)                                     # 作业1所有通过
+        pass_num = len(qh_all_pass)                                                 # 作业1所有通过数
+        qh_list.append({
+            'qi': qi,
+            'qh_all': qh_all,
+            'download_num': download_num,
+            'qh_all_submit': qh_all_submit,
+            'submit_num': submit_num,
+            'qh_all_pass': qh_all_pass,
+            'pass_num': pass_num
+        })
 
     qs_all = User.objects.filter(user_type=1)                                   # 所有学生
     student_num = len(qs_all)                                                   # 所有学生数
@@ -160,7 +174,7 @@ def students(request):
     qs_all_num = len(qs_all)
     return HttpResponse(template.render(locals()))
 
-def issues(request):
+def issues(request, id):
     # 如果未登录跳回首页
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/')
@@ -176,7 +190,11 @@ def issues(request):
     else:
         return HttpResponseRedirect('/')
 
-    issue = 1
+    issue_num = range(1, Issue.objects.count() + 1)
+    if id:
+        issue = int(id)
+    else:
+        issue = Issue.objects.count()
     time = timezone.now()
     permission = True
     template = get_template('teacher/issues.html')
