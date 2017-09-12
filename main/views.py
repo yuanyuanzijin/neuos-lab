@@ -52,10 +52,16 @@ def home(request):
     homework_list = []
     for qi in qi_all:
         qh = Homework.objects.filter(student_id__student_id=user, issue_id=qi.id)
-        homework_list.append({
-            'qi': qi,
-            'qh': qh[0]
-        })
+        if qh:
+            homework_list.append({
+                'qi': qi,
+                'qh': qh[0]
+            })
+        else :
+            homework_list.append({
+                'qi': qi,
+                'qh': {}
+            })
     return HttpResponse(template.render(locals()))
         
 
