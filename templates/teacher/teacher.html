@@ -41,7 +41,13 @@
                     {% endif %}
                 </td>
                 <!-- 截止时间 -->
-                <td>{{qh.qi.deadline}}</td>
+                <td>
+                {% if qh.qi.deadline %}
+                    {{qh.qi.deadline}}
+                {% else %}
+                    ——
+                {% endif %}
+                </td>
                 <!-- 已下载 -->
                 <td>{{qh.download_num}}</td>
                 <!-- 已提交 -->

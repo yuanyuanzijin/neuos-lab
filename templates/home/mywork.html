@@ -1,28 +1,21 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    我的作业
     {% if qi %}
-        <small>作业{{ qi.id }}</small>
+        作业{{ qi.id }}
+    {% else %}
+        我的作业
     {% endif %}
 {% endblock %}
 
 {% block content %}
 
 <!-- 导航信息 -->
-<div style="font-size: 16px;">
+<div style="font-size: 16px; line-height: 50px; margin-left: 10px;">
     <!-- 选择作业 -->
-    <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline" onchange="self.location.href=options[selectedIndex].value">
-        {% for id in issue_num %}
-            {% ifequal id issue %}
-                <option value="/home/mywork/{{ id }}" selected="selected">作业{{ id }}</option>
-            {% else %}
-                <option value="/home/mywork/{{ id }}">作业{{ id }}</option>
-            {% endifequal %}
-        {% endfor %}
-    </select>
+    作业状态：
     <!-- 是否下发 -->
-    <span style="margin-left: 20px;">
+    <span>
         {% if qi.issued %}
             <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
             <span class="green">已下发</span> 

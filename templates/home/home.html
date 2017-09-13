@@ -72,7 +72,13 @@
                 {% endif %}
                 </td>
                 <!-- 截止时间 -->
-                <td>{{homework.qi.deadline}}</td>
+                <td>
+                {% if homework.qi.deadline %}
+                    {{homework.qi.deadline}}
+                {% else %}
+                    ——
+                {% endif %}
+                </td>
                 <!-- 提交时间 -->
                 <td>
                 {% if homework.qh.repo %} {{homework.qh.submit_time}} {% else %}
