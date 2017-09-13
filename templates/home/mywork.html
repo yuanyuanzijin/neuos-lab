@@ -2,6 +2,9 @@
 
 {% block header %}
     我的作业
+    {% if qi %}
+        <small>作业{{ qi.id }}</small>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -137,7 +140,7 @@
                 <div id="div-check" style="margin-top: 20px; display:none">
                     <span>检测结果：</span>
                     <span id="check-result" class="gray">未检测</span>
-                    <a href="/home/mywork/" style="margin-left: 10px">刷新</a>  
+                    <a href="javascript:location.reload()" style="margin-left: 10px">刷新</a>
                 </div>
             {% else %}
                 <span>您还没有提交作业</span>    

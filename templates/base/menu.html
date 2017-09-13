@@ -1,30 +1,47 @@
 <!-- 学生模式 -->
 {% if not permission %}
 <div class="list-group" id="menulist">
-  <a href="/home/" class="list-group-item">总览</a>
-  <a href="/home/mywork/" class="list-group-item">我的作业</a>
-  <a href="/home/myinfo/" class="list-group-item">个人中心</a>
+    <a href="/home/" class="list-group-item">总览</a>
+    <a href="/home/myinfo/" class="list-group-item">个人中心</a>
+    <a class="list-group-item"  data-toggle="collapse" href="#collapseIssues" aria-expanded="false" aria-controls="collapseExample">我的作业</a>
+    <div class="collapse" id="collapseIssues">
+        <div class="well" style="padding: 0px 0px 0px 30px; margin: 0px">
+            {% for i in qi_all %}
+                <a href="/home/mywork/{{ i.id }}" class="list-group-item">作业{{ i.id }}</a>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 <!-- 教师模式 -->
 {% else %}
 <div class="list-group" id="menulist">
     <a href="/teacher/" class="list-group-item">总览</a>
-    <a href="/teacher/issues/" class="list-group-item">作业管理</a>
     <a href="/teacher/students/" class="list-group-item">学生管理</a>
+    <a class="list-group-item"  data-toggle="collapse" href="#collapseIssues" aria-expanded="false" aria-controls="collapseExample">作业管理</a>
+    <div class="collapse" id="collapseIssues">
+        <div class="well" style="padding: 0px 0px 0px 30px; margin: 0px">
+            {% for i in qi_all %}
+                <a href="/teacher/issues/{{ i.id }}" class="list-group-item">作业{{ i.id }}</a>
+            {% endfor %}
+            <a href="/api/addissue" class="list-group-item"> + 添加作业</a>
+        </div>
+    </div>
 </div>
 {% endif %}
 
 <script>
     //根据地址栏的路径将对应的菜单设置为active状态
     var path = window.location.pathname;
-    var menus = $('#menulist').children('a');
+    var menus = $('#menulist').find('a');
     var menus_num = menus.length;
     for(var i = menus_num-1; i>=0; i--){
-        // if(menus[i].getAttribute('href').indexOf(path) >= 0){
         if(path.indexOf(menus[i].getAttribute('href')) >= 0){
             $(menus[i]).addClass('active');
             break;
         }
+    }
+    if(path.indexOf('issues') >= 0 || path.indexOf('mywork') >= 0 ){
+        $('.collapse').collapse();
     }
 </script>

@@ -127,8 +127,8 @@ def add_issue(request):
     else:
         return HttpResponseRedirect('/')
 
-    issue = request.GET['issue']
-    Issue.objects.create(id=issue,issued=True)
+    new_issue = Issue.objects.count()+1
+    Issue.objects.create(id=new_issue,issued=True)
     return HttpResponseRedirect('/teacher/issues')
 
 # 作业下发，允许提交开关设置
@@ -315,21 +315,26 @@ def check_request(request):
     user_type = qu.user_type
     # 是老师返回
     if user_type == 2:
-        return HttpResponse("It is student's function")
+        return HttpResponse("This is a student's function.")
     
     issue = request.GET['issue']
+    qh = Homework.objects.filter(student_id=user, issue_id=issue)
+    if qh:
+        qh = qh[0]
+    else:
+        return HttpResponse('Have not downloaded the homework.')
     # 检查是否绑定Github
     if qu.github:
         github = qu.github
     else:
-        return HttpResponse('Have not bind Github.')
+        return HttpResponse('Have not binded Github.')
     # 检查是否提交作业
-    if qu.homework.repo:
-        repo = qu.homework.repo
+    if qh.repo:
+        repo = qh.repo
     else:
-        return HttpResponse('Have not submit homework.')
+        return HttpResponse('Have not submitted the homework.')
 
-    homework_id = qu.homework.id
+    homework_id = qh.id
     Homework.objects.filter(id=homework_id).update(self_check_result=3)
     Pending.objects.create(homework_id=homework_id, check_type=0)
     return HttpResponse('SUCCESS')
@@ -347,7 +352,7 @@ def check_request_all(request):
     time = timezone.now()
     # 是学生返回
     if user_type == 1:
-        return HttpResponse("It is teacher's function")
+        return HttpResponse("This is a teacher's function.")
     
     qh_all = Homework.objects.filter(issue_id=issue)
     qh_all_num = len(qh_all)

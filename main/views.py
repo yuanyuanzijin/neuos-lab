@@ -75,6 +75,7 @@ def mywork(request, id):
         issue = int(id)
     else:
         issue = Issue.objects.count()
+        return HttpResponseRedirect('/home/mywork/'+str(issue))
     user = request.user.username
     qu = User.objects.filter(student_id=user)
     if qu:
@@ -86,6 +87,7 @@ def mywork(request, id):
         return HttpResponseRedirect('/')
     
     template = get_template('home/mywork.html')
+    qi_all = Issue.objects.all()  # 所有布置的作业
     qi = Issue.objects.filter(id=issue)
     if qi:
         qi = qi[0]
@@ -111,6 +113,7 @@ def myinfo(request):
     else:
         return HttpResponseRedirect('/')
 
+    qi_all = Issue.objects.all()  # 所有布置的作业
     template = get_template('home/myinfo.html')
     return HttpResponse(template.render(locals()))
     
@@ -180,6 +183,7 @@ def students(request):
 
     permission = True
     template = get_template('teacher/students.html')
+    qi_all = Issue.objects.all()  # 所有布置的作业
     qs_all = User.objects.filter(user_type=1).order_by('student_id')
     qs_all_num = len(qs_all)
     return HttpResponse(template.render(locals()))
@@ -205,9 +209,11 @@ def issues(request, id):
         issue = int(id)
     else:
         issue = Issue.objects.count()
+        return HttpResponseRedirect('/teacher/issues/'+str(issue))
     time = timezone.now()
     permission = True
     template = get_template('teacher/issues.html')
+    qi_all = Issue.objects.all()  # 所有布置的作业
     qi = Issue.objects.filter(id=issue)
     if qi:
         qi = qi[0]

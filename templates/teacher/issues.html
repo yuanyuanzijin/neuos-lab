@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 
-{% block header %}作业管理{% endblock %}
+{% block header %}
+    作业管理
+    {% if qi %}
+        <small>作业{{ qi.id }}</small>
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 
@@ -112,7 +117,7 @@
             {% if qh.repo %}
             <tr>
                 <!-- 学号 -->
-                <td>{{qh.student_id}}</td>
+                <td>{{qh.student_id.student_id}}</td>
                 <!-- 姓名 -->
                 <td>{{qh.student_id.name}}</td>
                 <!-- 提交时间 -->
@@ -346,7 +351,7 @@
 
 {% else %}
 <div class="alert alert-warning alert-dismissible" role="alert">
-    作业信息不存在。<a href="/api/addissue?issue=1">点击添加</a>作业一。
+    作业信息不存在。<a href="/api/addissue">点击添加</a>作业。
 </div>
 {% endif %}
 {% endblock %}
