@@ -1,55 +1,16 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    作业管理
     {% if qi %}
-        <small>作业{{ qi.id }}</small>
+        作业{{ qi.id }}
+    {% else %}
+        作业不存在
     {% endif %}
 {% endblock %}
 
 {% block content %}
 
 {% if qi %}
-<!-- 作业概况 -->
-<div style="font-size: 16px;">
-    <select class="form-control" style="width: 100px; margin: 10px 0px; display: inline" onchange="self.location.href=options[selectedIndex].value">
-        {% for id in issue_num %}
-            {% ifequal id issue %}
-                <option value="/teacher/issues/{{ id }}" selected="selected">作业{{ id }}</option>
-            {% else %}
-                <option value="/teacher/issues/{{ id }}">作业{{ id }}</option>
-            {% endifequal %}
-        {% endfor %}
-    </select>
-    <span style="margin-left: 20px;">
-        {% if qi.issued %}
-            <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
-            <span class="green">已下发</span>
-        {% else %}
-            <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
-            <span class="red">未下发</span>
-        {% endif %}
-    </span>
-    
-    <span style="margin-left: 20px">
-        {% if qi.allow_submit %}
-            <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
-            <span class="green">可提交</span>
-        {% else %}
-            <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
-            <span class="red">不可提交</span>
-        {% endif %}
-    </span>
-    
-    <span style="margin-left: 20px">
-        截止时间：
-        {% if qi.deadline %}
-            <b>{{ qi.deadline }}</b>
-        {% else %}
-            未设置
-        {% endif %}
-    </span>
-</div>
 
 <!-- 作业操作 -->
 <div class="panel panel-success" style="max-width: 600px">
@@ -59,20 +20,36 @@
     <div class="panel-body">
         <!-- 是否下发 -->
         {% if qi.issued %}
-            <span>是否下发：<span class="green">已下发</span></span>
+            <span>
+                是否下发：
+                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                <span class="green">已下发</span>
+            </span>
             <button id="switch_issued" action="close" class="btn btn-default" type="submit">停止</button>
         {% else %}
-            <span>是否下发：<span class="red">未下发</span></span>
+            <span>
+                是否下发：
+                <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                <span class="red">未下发</span>
+            </span>
             <button id="switch_issued" action="open" class="btn btn-default" type="submit">下发作业</button>
         {% endif %}
         <hr>
         <!-- 是否允许提交 -->
         {% if qi.allow_submit %}
-            <span>提交入口：<span class="green">已开启</span></span>
+            <span>
+                提交入口：
+                <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
+                <span class="green">已开启</span>
+            </span>
             <button id="switch_allow_submit" action="close" class="btn btn-default" type="submit">关闭</button>
         {% else %}
             {% if qi.issued %}
-                <span>提交入口：<span class="red">已关闭</span></span>
+                <span>
+                    提交入口：
+                    <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
+                    <span class="red">已关闭</span>
+                </span>
                 <button id="switch_allow_submit" action="open" class="btn btn-default" type="submit">开启</button>
             {% else %}  
                 <span>提交入口：<span class="gray">请先下发作业</span></span>
@@ -83,7 +60,7 @@
         {% if qi.deadline %}
             截止时间：
             {% if qi.deadline <= time %}
-                <span class="red">{{qi.deadline}}（已过期）</span>
+                <span class="red">{{qi.deadline}}（已到期）</span>
             {% else %}
                 <span class="green">{{qi.deadline}}</span>
             {% endif %}
@@ -224,8 +201,8 @@
                 <div class="form-group">
                     <label for="exampleInputEmail1">作业提交截止时间</label>
                     <div id="datetime-choose">
-                        <input id="choose-date" type="date" class="form-control date" value="2017-07-31">
-                        <input id="choose-time" type="time" class="form-control time" value="20:00">
+                        <input id="choose-date" type="date" class="form-control date" value="2017-09-01">
+                        <input id="choose-time" type="time" class="form-control time" value="22:00">
                     </div>
                 </div>
                 <p class="help-block">截止时间过后学生仍可提交作业，但会被标注为晚交</p>
@@ -351,7 +328,7 @@
 
 {% else %}
 <div class="alert alert-warning alert-dismissible" role="alert">
-    作业信息不存在。<a href="/api/addissue">点击添加</a>作业。
+    作业信息不存在。<a href="/api/addissue">点击添加</a>下一条作业。
 </div>
 {% endif %}
 {% endblock %}

@@ -318,7 +318,7 @@ def check_request(request):
         return HttpResponse("This is a student's function.")
     
     issue = request.GET['issue']
-    qh = Homework.objects.filter(student_id=user, issue_id=issue)
+    qh = Homework.objects.filter(student_id__student_id=user,issue_id=issue)
     if qh:
         qh = qh[0]
     else:
