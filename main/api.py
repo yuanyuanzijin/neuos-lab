@@ -128,7 +128,7 @@ def add_issue(request):
         return HttpResponseRedirect('/')
 
     new_issue = Issue.objects.count()+1
-    Issue.objects.create(id=new_issue,issued=True)
+    Issue.objects.create(id=new_issue, issued=False)
     return HttpResponseRedirect('/teacher/issues')
 
 # 作业下发，允许提交开关设置

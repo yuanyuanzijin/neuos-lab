@@ -8,6 +8,8 @@
         <div class="well" style="padding: 0px 0px 0px 30px; margin: 0px">
             {% for i in qi_all %}
                 <a href="/home/mywork/{{ i.id }}" class="list-group-item">作业{{ i.id }}</a>
+            {% empty %}
+                <a href="#" class="list-group-item"><span class="gray">暂无作业</span></a>
             {% endfor %}
         </div>
     </div>
