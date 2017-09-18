@@ -82,17 +82,19 @@
     </div>
     <table class="table table-hover table-striped">
         <thead>
-          <th>学号</th>
-          <th>姓名</th>
-          <th>提交时间</th>
-          <th>是否按时</th>
-          <th>验收结果</th>
-          <th>操作</th>
+            <th>序号</th>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>提交时间</th>
+            <th>是否按时</th>
+            <th>验收结果</th>
+            <th>操作</th>
         </thead>
         <tbody>
         {% for qh in qh_all %}
             {% if qh.repo %}
             <tr>
+                <td>{{ forloop.counter }}</td>
                 <!-- 学号 -->
                 <td>{{qh.student_id.student_id}}</td>
                 <!-- 姓名 -->
@@ -148,6 +150,7 @@
     
     <table class="table table-hover table-striped">
         <thead>
+            <th>序号</th>
             <th>学号</th>
             <th>姓名</th>
             <th>是否绑定Github</th>
@@ -157,6 +160,7 @@
         <tbody>
         {% for qs in qs_not_all %}
             <tr>
+                <td>{{ forloop.counter }}</td>
                 <td>{{qs.student_id}}</td>
                 <td>
                     {% if qs.name %}
