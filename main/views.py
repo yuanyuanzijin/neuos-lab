@@ -217,7 +217,10 @@ def issues(request, id):
     qi = Issue.objects.filter(id=issue)
     if qi:
         qi = qi[0]
-    qs_not_all = User.objects.filter(user_type=1).order_by('student_id').exclude(homework__repo__isnull=False, homework__issue_id=issue)
+    qs_not_all = User.objects.all().exclude(homework__in=Homework.objects.filter(issue_id=issue, repo__isnull=False))\
+        .values('student_id', 'github', 'name')
+    for qs_not in qs_not_all:
+        qs_not['qh'] = Homework.objects.filter(issue_id=issue, student_id__student_id=qs_not['student_id'])
     qh_all = Homework.objects.filter(issue_id=issue)
     return HttpResponse(template.render(locals()))
 

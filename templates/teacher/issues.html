@@ -174,15 +174,15 @@
                     
                 </td>
                 <td>
-                    {% if qs.homework %}
+                    {% if qs.qh %}
                         <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
                     {% else %}
                         <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
                     {% endif %}
                 </td>
                 <td>
-                    {% if qs.homework.download_limit %}
-                        <span>{{qs.homework.download_limit}}</span>
+                    {% if qs.qh.download_limit %}
+                        <span>{{qs.qh.download_limit}}</span>
                     {% else %}
                         <span>3</span>
                     {% endif %}
