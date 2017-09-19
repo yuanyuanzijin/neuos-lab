@@ -220,8 +220,10 @@ def issues(request, id):
     qs_not_all = User.objects.filter(user_type=1).exclude(homework__in=Homework.objects.filter(issue_id=issue, repo__isnull=False))\
         .values('student_id', 'github', 'name')
     for qs_not in qs_not_all:
-        qs_not['qh'] = Homework.objects.filter(issue_id=issue, student_id__student_id=qs_not['student_id'])
-    qh_all = Homework.objects.filter(issue_id=issue)
+        qh = Homework.objects.filter(issue_id=issue, student_id__student_id=qs_not['student_id'])
+        if qh:
+            qs_not['download_limit'] = qh[0].download_limit
+    qh_has_all = Homework.objects.filter(issue_id=issue, repo__isnull=False)
     return HttpResponse(template.render(locals()))
 
 ################ 退出登录 ###################################

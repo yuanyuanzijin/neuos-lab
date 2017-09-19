@@ -91,8 +91,7 @@
             <th>操作</th>
         </thead>
         <tbody>
-        {% for qh in qh_all %}
-            {% if qh.repo %}
+        {% for qh in qh_has_all %}
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <!-- 学号 -->
@@ -132,10 +131,9 @@
                 <!-- 操作 -->
                 <td><a href="https://github.com/{{qh.student_id.github}}/{{qh.repo}}" target="_blank">查看作业</a></td>
             </tr>
-            {% endif %}
         {% empty %}
         <tr>
-            <td colspan="6"><span class="gray">暂无名单</span></td>
+            <td colspan="7"><span class="gray">暂无名单</span></td>
         </tr>
         {% endfor %}
         </tbody>
@@ -158,19 +156,15 @@
             <th>下载剩余次数</th>
         </thead>
         <tbody>
-        {% for qs in qs_not_all %}
+        {% for qs_not in qs_not_all %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{qs.student_id}}</td>
+                <td>{{qs_not.student_id}}</td>
                 <td>
-                    {% if qs.name %}
-                        <span>{{qs.name}}</span>
-                    {% else %}
-                       <span>——</span> 
-                    {% endif %}
+                    <span>{{ qs_not.name | default:'——'}}</span>
                 </td>
                 <td>
-                    {% if qs.github %}
+                    {% if qs_not.github %}
                         <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>                        
                     {% else %}
                         <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>                        
@@ -178,18 +172,14 @@
                     
                 </td>
                 <td>
-                    {% if qs.qh %}
+                    {% if qs_not.qh %}
                         <span class="glyphicon glyphicon-ok-sign green" aria-hidden="true"></span>
                     {% else %}
                         <span class="glyphicon glyphicon-remove-sign red" aria-hidden="true"></span>
                     {% endif %}
                 </td>
                 <td>
-                    {% if qs.qh.download_limit %}
-                        <span>{{qs.qh.download_limit}}</span>
-                    {% else %}
-                        <span>3</span>
-                    {% endif %}
+                    <span>{{ qs_not.download_limit | default:'3'}}</span>
                 </td>
             </tr>
         {% empty %}

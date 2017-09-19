@@ -32,8 +32,8 @@
             {% for qs in qs_all %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{qs.student_id}}</td>
-                <td>{% if qs.name %}{{qs.name}}{% else %}——{% endif %}</td>
+                <td>{{ qs.student_id }}</td>
+                <td>{{ qs.name | default:"——" }}</td>
                 <td>{% if qs.github %}<a href="http://github.com/{{qs.github}}" target="_blank">{{qs.github}}</a>{% else %}——{% endif %}</td>
                 <td><a class="del_btn">删除</a></td>
             </tr>
